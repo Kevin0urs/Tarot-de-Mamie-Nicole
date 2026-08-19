@@ -1,0 +1,2506 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le tarot de Mamie Nicole</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+
+/* --- styles/main.css --- */
+/* Global Styles & Sunburst Theme - Le tarot de Mamie Nicole */
+:root {
+  --lime-green-bg: #89c53f;
+  --lime-green-light: #a4dc55;
+  --cream-bg: #fdfbf2;
+  --felt-green: #1c6b37;
+  --felt-green-dark: #124d26;
+  --gold-accent: #f5cf47;
+  --text-dark: #222222;
+  --font-family: 'Fredoka', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: var(--font-family);
+  background-color: var(--lime-green-bg);
+}
+
+/* Dynamic Sunburst Rays Background */
+.sunburst-bg {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 300vmax;
+  height: 300vmax;
+  transform: translate(-50%, -50%);
+  background: repeating-conic-gradient(
+    from 0deg,
+    var(--lime-green-bg) 0deg 15deg,
+    var(--lime-green-light) 15deg 30deg
+  );
+  z-index: 0;
+  animation: rotateSunburst 200s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotateSunburst {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Main App Container: Fixed Grid / Flex Layout that never overflows */
+#app {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px 0 12px;
+  overflow: hidden;
+}
+
+/* Header */
+header {
+  width: 100%;
+  max-width: 1100px;
+  height: 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.game-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow:
+    3px 3px 0px #000,
+    -2px -2px 0px #000,
+    2px -2px 0px #000,
+    -2px 2px 0px #000,
+    0px 4px 8px rgba(0,0,0,0.4);
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3));
+}
+
+.header-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-icon {
+  background: #ffffff;
+  border: 3px solid #222;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #222;
+  transition: transform 0.1s, box-shadow 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #222;
+}
+
+/* Standard Buttons */
+.btn-primary {
+  background: linear-gradient(180deg, #ffdf58 0%, #f39c12 100%);
+  border: 3px solid #000;
+  border-radius: 12px;
+  padding: 8px 20px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #000;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #000;
+  transition: transform 0.1s, box-shadow 0.1s;
+  text-transform: uppercase;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+.btn-primary:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #000;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: linear-gradient(180deg, #ffffff 0%, #dcdde1 100%);
+  border: 3px solid #000;
+  border-radius: 12px;
+  padding: 8px 18px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #000;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #000;
+}
+
+/* --- styles/table.css --- */
+/* Table & Player Layout - Le tarot de Mamie Nicole */
+
+/* Middle Table Area: Takes all available vertical space between header & hand */
+.table-container {
+  flex: 1;
+  width: 100%;
+  max-width: 980px;
+  min-height: 0; /* Crucial for flex containers so children shrink rather than overflow! */
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 10px;
+  z-index: 5;
+}
+
+/* Oval Felt Table: Flexible dimensions that fit any screen aspect ratio */
+.tarot-table {
+  position: relative;
+  width: 100%;
+  height: 96%;
+  max-height: 380px;
+  min-height: 220px;
+  background: radial-gradient(circle, #258c49 0%, #134e26 100%);
+  border: 10px solid #8d5628;
+  border-radius: 160px;
+  box-shadow:
+    inset 0 0 35px rgba(0, 0, 0, 0.6),
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 0 0 2px #4a2d14;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Center Trick Area */
+.trick-area {
+  position: relative;
+  width: 260px;
+  height: 170px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.trick-card-slot {
+  position: absolute;
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.trick-card-slot[data-position="south"] { transform: translateY(26px); }
+.trick-card-slot[data-position="north"] { transform: translateY(-26px); }
+.trick-card-slot[data-position="west"] { transform: translateX(-44px); }
+.trick-card-slot[data-position="east"] { transform: translateX(44px); }
+
+/* Center Game Info (Contract & Trick number) */
+.center-info {
+  position: absolute;
+  top: 10px;
+  background: rgba(0, 0, 0, 0.78);
+  color: #fff;
+  padding: 4px 14px;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  z-index: 12;
+}
+
+/* Player Slots around the table */
+.player-slot {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  z-index: 15;
+}
+
+.player-slot.north { top: 8px; }
+.player-slot.west  { left: 16px; }
+.player-slot.east  { right: 16px; }
+.player-slot.south { bottom: 8px; }
+
+/* Player Avatar Box */
+.avatar-box {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  background: #ffffff;
+  border: 3px solid #222;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.player-slot.active-turn .avatar-box {
+  border-color: #f1c40f;
+  transform: scale(1.12);
+  box-shadow: 0 0 16px #f1c40f;
+}
+
+.player-name-tag {
+  background: #000000;
+  color: #ffffff;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  white-space: nowrap;
+  border: 1px solid #444;
+}
+
+.player-score {
+  font-size: 0.72rem;
+  color: #ffffff;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+}
+
+.preneur-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #e74c3c;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 900;
+  padding: 1px 5px;
+  border-radius: 6px;
+  border: 2px solid #fff;
+  text-transform: uppercase;
+}
+
+/* Speech Bubbles */
+.speech-bubble {
+  position: absolute;
+  background: #ffffff;
+  color: #000;
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  border: 2px solid #000;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+  white-space: nowrap;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.2s ease-out;
+  pointer-events: none;
+  z-index: 30;
+}
+
+.speech-bubble.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.player-slot.north .speech-bubble { bottom: -38px; }
+.player-slot.south .speech-bubble { top: -38px; }
+.player-slot.west  .speech-bubble { left: 65px; }
+.player-slot.east  .speech-bubble { right: 65px; }
+
+/* Bottom Dock for Human Hand */
+.human-hand-container {
+  width: 100%;
+  max-width: 960px;
+  height: 142px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 6px;
+  flex-shrink: 0;
+  z-index: 25;
+}
+
+.hand-cards-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 130px;
+}
+
+.hand-card-item {
+  position: absolute;
+  bottom: 0;
+  transform: translateX(var(--card-x, 0px)) translateY(0);
+  transform-origin: bottom center;
+  transition: transform 0.16s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.16s ease-out;
+  cursor: pointer;
+}
+
+.hand-card-item:hover {
+  transform: translateX(var(--card-x, 0px)) translateY(-22px) scale(1.08) !important;
+  z-index: 300 !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.5) !important;
+}
+
+.hand-card-item.selected {
+  transform: translateX(var(--card-x, 0px)) translateY(-28px) scale(1.1) !important;
+  z-index: 350 !important;
+  box-shadow: 0 0 14px #f1c40f !important;
+}
+
+.hand-card-item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.4);
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 500;
+  pointer-events: none;
+}
+
+.modal-overlay.modal-solid {
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(3px);
+}
+
+.modal-content {
+  background: #fdfbf2;
+  border: 4px solid #222;
+  border-radius: 20px;
+  padding: 18px 24px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  pointer-events: auto;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+  color: #222;
+}
+
+.bidding-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+/* --- styles/cards.css --- */
+/* Card Component Styles - Le tarot de Mamie Nicole */
+
+.tarot-card {
+  width: 70px;
+  height: 118px;
+  background: #ffffff;
+  border: 2px solid #2c3e50;
+  border-radius: 7px;
+  box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.3);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 3px;
+  background-size: cover;
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, filter 0.15s;
+  transform-origin: bottom center;
+}
+
+.tarot-card.back {
+  background: radial-gradient(circle, #b71c1c 0%, #7f0000 100%);
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+}
+
+.tarot-card.back::after {
+  content: '';
+  position: absolute;
+  top: 4px; left: 4px; right: 4px; bottom: 4px;
+  border: 1px dashed rgba(255,255,255,0.4);
+  border-radius: 4px;
+}
+
+/* Playable highlight glow */
+.tarot-card.playable {
+  box-shadow: 0 0 10px 3px #f1c40f, 0 3px 6px rgba(0,0,0,0.3);
+  border-color: #f39c12;
+}
+
+/* Suit Colors */
+.tarot-card[data-suit="spade"],
+.tarot-card[data-suit="club"] {
+  color: #1a252f;
+}
+
+.tarot-card[data-suit="heart"],
+.tarot-card[data-suit="diamond"] {
+  color: #c0392b;
+}
+
+/* ATOUT (TRUMP) DISTINCT VISUAL STYLING */
+.tarot-card[data-suit="trump"] {
+  color: #111111;
+  background: linear-gradient(180deg, #fff9e6 0%, #fef3c7 40%, #fde68a 100%);
+  border: 2.5px solid #d97706;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.35);
+}
+
+.tarot-card[data-suit="trump"] .trump-header-banner {
+  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 900;
+  text-align: center;
+  padding: 1px 0;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1px;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+}
+
+/* EXCUSE DISTINCT VISUAL STYLING */
+.tarot-card[data-suit="excuse"] {
+  color: #ffffff;
+  background: linear-gradient(180deg, #9333ea 0%, #6b21a8 100%);
+  border: 2.5px solid #a855f7;
+  box-shadow: 0 2px 10px rgba(147, 51, 234, 0.4);
+}
+
+.tarot-card[data-suit="excuse"] .excuse-header-banner {
+  background: #facc15;
+  color: #000000;
+  font-size: 0.62rem;
+  font-weight: 900;
+  text-align: center;
+  padding: 1px 0;
+  border-radius: 3px;
+  text-transform: uppercase;
+  margin-bottom: 1px;
+}
+
+/* Card Corner Ranks & Symbols */
+.card-corner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  font-weight: 900;
+  font-size: 0.85rem;
+}
+
+.card-corner.top-left {
+  align-self: flex-start;
+}
+
+.card-corner.bottom-right {
+  align-self: flex-end;
+  transform: rotate(180deg);
+}
+
+.suit-symbol {
+  font-size: 0.8rem;
+  margin-top: 1px;
+}
+
+/* Center Card Art/Content */
+.card-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.trump-number {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #78350f;
+  font-family: 'Times New Roman', serif;
+  text-shadow: 1px 1px 0 #fff;
+}
+
+.trump-frame {
+  border: 1.5px solid #d97706;
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bout-badge {
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.55rem;
+  font-weight: 900;
+  padding: 1px 3px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  margin-top: 2px;
+  border: 1px solid #ffffff;
+}
+
+.court-art {
+  font-size: 1.5rem;
+  opacity: 0.95;
+}
+
+.suit-pip-center {
+  font-size: 1.4rem;
+}
+
+  </style>
+</head>
+<body>
+  <!-- Animated Sunburst Background -->
+  <div class="sunburst-bg"></div>
+
+  <!-- Main Application Wrapper -->
+  <div id="app">
+    <!-- Retro Header -->
+    <header>
+      <div class="game-title">Le tarot de Mamie Nicole</div>
+      <div class="header-controls">
+        <button class="btn-icon" id="sound-btn" title="Activer/Désactiver le son">🔊</button>
+      </div>
+    </header>
+
+    <!-- Table Container -->
+    <div class="table-container">
+      <div class="tarot-table">
+
+        <!-- Center Info & Trick Area -->
+        <div class="center-info" id="center-info">
+          <span>Phase: <strong>Initialisation...</strong></span>
+        </div>
+
+        <div class="trick-area" id="trick-area"></div>
+
+        <!-- Joueur 2 (North) -->
+        <div class="player-slot north" id="player-north">
+          <div class="speech-bubble" id="bubble-north"></div>
+          <div class="avatar-box">👵</div>
+          <div class="player-name-tag">Joueur 2</div>
+          <div class="player-score" id="score-north">0 pts</div>
+        </div>
+
+        <!-- Joueur 1 (West) -->
+        <div class="player-slot west" id="player-west">
+          <div class="speech-bubble" id="bubble-west"></div>
+          <div class="avatar-box">👴</div>
+          <div class="player-name-tag">Joueur 1</div>
+          <div class="player-score" id="score-west">0 pts</div>
+        </div>
+
+        <!-- Joueur 3 (East) -->
+        <div class="player-slot east" id="player-east">
+          <div class="speech-bubble" id="bubble-east"></div>
+          <div class="avatar-box">👩</div>
+          <div class="player-name-tag">Joueur 3</div>
+          <div class="player-score" id="score-east">0 pts</div>
+        </div>
+
+        <!-- Vous (South / Human) -->
+        <div class="player-slot south" id="player-south">
+          <div class="speech-bubble" id="bubble-south"></div>
+          <div class="avatar-box">👦</div>
+          <div class="player-name-tag">Vous</div>
+          <div class="player-score" id="score-south">0 pts</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Human Hand Dock -->
+    <div class="human-hand-container" id="human-hand"></div>
+  </div>
+
+  <!-- Bidding Modal (semi-transparent so hand is still visible below) -->
+  <div class="modal-overlay" id="bidding-modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-title" id="bidding-title">À vous d'annoncer !</div>
+      <p style="color:#666; font-size:0.9rem; margin-bottom:4px;">Examinez vos cartes ci-dessous, puis choisissez votre contrat :</p>
+      <div class="bidding-options" id="bidding-options"></div>
+    </div>
+  </div>
+
+  <!-- Chien Discard Modal -->
+  <div class="modal-overlay modal-solid" id="chien-modal" style="display:none;">
+    <div class="modal-content" style="max-width:760px;">
+      <div class="modal-title">Écart du Preneur</div>
+      <p id="chien-instructions" style="margin-bottom:10px; font-weight:bold; color:#333;"></p>
+      <div id="chien-cards-container" style="display:flex; flex-wrap:wrap; justify-content:center; max-height:310px; overflow-y:auto; margin-bottom:14px; gap:4px;"></div>
+      <button class="btn-primary" id="confirm-chien-btn" disabled>Valider l'écart</button>
+    </div>
+  </div>
+
+  <!-- Scoring Modal -->
+  <div class="modal-overlay modal-solid" id="scoring-modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-title">Résultats de la Manche</div>
+      <div id="scoring-details"></div>
+      <button class="btn-primary" id="next-round-btn" style="margin-top:18px;">Manche Suivante ▶</button>
+    </div>
+  </div>
+
+  <script>
+
+// --- src/engine/types.js ---
+/**
+ * Types and Constants for 4-Player French Tarot
+ */
+
+const SUITS = {
+  SPADE: 'spade',
+  HEART: 'heart',
+  DIAMOND: 'diamond',
+  CLUB: 'club',
+  TRUMP: 'trump',
+  EXCUSE: 'excuse'
+};
+
+const CONTRACTS = {
+  PASSE: { id: 'passe', name: 'Passe', multiplier: 0, priority: 0 },
+  PETITE: { id: 'petite', name: 'Petite', multiplier: 1, priority: 1 },
+  GARDE: { id: 'garde', name: 'Garde', multiplier: 2, priority: 2 },
+  GARDE_SANS: { id: 'garde_sans', name: 'Garde Sans', multiplier: 4, priority: 3 },
+  GARDE_CONTRE: { id: 'garde_contre', name: 'Garde Contre', multiplier: 6, priority: 4 }
+};
+
+const PLAYER_POSITIONS = ['south', 'west', 'north', 'east'];
+
+const DEFAULT_PLAYERS = [
+  { id: 0, name: 'Vous', isHuman: true, position: 'south', avatar: 'human' },
+  { id: 1, name: 'Joueur 1', isHuman: false, position: 'west', avatar: 'papi' },
+  { id: 2, name: 'Joueur 2', isHuman: false, position: 'north', avatar: 'mamie' },
+  { id: 3, name: 'Joueur 3', isHuman: false, position: 'east', avatar: 'tante' }
+];
+
+const GAME_PHASES = {
+  DEALING: 'DEALING',
+  BIDDING: 'BIDDING',
+  CHIEN_REVEAL: 'CHIEN_REVEAL',
+  CHIEN_DISCARD: 'CHIEN_DISCARD',
+  PLAYING: 'PLAYING',
+  SCORING: 'SCORING',
+  GAME_OVER: 'GAME_OVER'
+};
+
+/**
+ * Card point values according to FFT standard:
+ * King = 4.5
+ * Queen = 3.5
+ * Knight (Cavalier) = 2.5
+ * Jack (Valet) = 1.5
+ * Bouts (1 of Trump, 21 of Trump, Excuse) = 4.5 pts
+ * All other cards (Petites cards and Trumps 2-20) = 0.5 pt
+ * Total deck points = 91
+ */
+function getCardPoints(card) {
+  if (card.suit === SUITS.EXCUSE) return 4.5;
+  if (card.suit === SUITS.TRUMP) {
+    if (card.value === 1 || card.value === 21) return 4.5;
+    return 0.5;
+  }
+  switch (card.value) {
+    case 14: return 4.5; // King (Roi)
+    case 13: return 3.5; // Queen (Dame)
+    case 12: return 2.5; // Knight (Cavalier)
+    case 11: return 1.5; // Jack (Valet)
+    default: return 0.5;
+  }
+}
+
+function isBout(card) {
+  if (card.suit === SUITS.EXCUSE) return true;
+  if (card.suit === SUITS.TRUMP && (card.value === 1 || card.value === 21)) return true;
+  return false;
+}
+
+// --- src/engine/deck.js ---
+/**
+ * Creates the complete 78-card French Tarot deck.
+ */
+function createDeck() {
+  const deck = [];
+
+  // 1. Excuse
+  deck.push({
+    id: 'excuse',
+    suit: SUITS.EXCUSE,
+    value: 0,
+    name: 'L\'Excuse',
+    points: 4.5,
+    isBout: true
+  });
+
+  // 2. Trumps 1 to 21
+  for (let i = 1; i <= 21; i++) {
+    const bout = (i === 1 || i === 21);
+    deck.push({
+      id: `trump_${i}`,
+      suit: SUITS.TRUMP,
+      value: i,
+      name: i === 1 ? ' Le Petit (1)' : `Atout ${i}`,
+      points: bout ? 4.5 : 0.5,
+      isBout: bout
+    });
+  }
+
+  // 3. Suits (Spade, Heart, Diamond, Club) 1-14
+  const suitList = [
+    { key: SUITS.SPADE, name: 'Pique', symbol: '♠' },
+    { key: SUITS.HEART, name: 'Cœur', symbol: '♥' },
+    { key: SUITS.DIAMOND, name: 'Carreau', symbol: '♦' },
+    { key: SUITS.CLUB, name: 'Trèfle', symbol: '♣' }
+  ];
+
+  const getRankName = (val) => {
+    switch (val) {
+      case 11: return 'Valet';
+      case 12: return 'Cavalier';
+      case 13: return 'Dame';
+      case 14: return 'Roi';
+      default: return `${val}`;
+    }
+  };
+
+  suitList.forEach(suit => {
+    for (let val = 1; val <= 14; val++) {
+      const card = {
+        id: `${suit.key}_${val}`,
+        suit: suit.key,
+        value: val,
+        name: `${getRankName(val)} de ${suit.name}`,
+        symbol: suit.symbol,
+        points: getCardPoints({ suit: suit.key, value: val }),
+        isBout: false
+      };
+      deck.push(card);
+    }
+  });
+
+  return deck;
+}
+
+/**
+ * Shuffles an array of cards using Fisher-Yates algorithm.
+ */
+function shuffleDeck(deck) {
+  const shuffled = [...deck];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+/**
+ * Deals cards 3 by 3 to 4 players and puts 6 cards in the Chien.
+ * Standard French Tarot distribution: 18 cards to 4 players + 6 in chien.
+ * Official rule: First card and last card of the deck cannot be dealt to the Chien.
+ * @param {Array} deck Shuffled 78-card deck
+ * @param {number} dealerId Player ID dealing (0..3)
+ */
+function dealCards(deck, dealerId = 0) {
+  const hands = [[], [], [], []];
+  const chien = [];
+  
+  // Deal order starts after the dealer: (dealerId + 1) % 4
+  const startPlayer = (dealerId + 1) % 4;
+
+  let deckIndex = 0;
+  let cardsDealtToPlayers = 0;
+
+  // We deal 24 rounds of 3 cards total (18*4 = 72 player cards + 6 chien cards = 78)
+  // We can pick random positions for the 6 chien cards (excluding index 0 and index 77)
+  const availableChienIndices = [];
+  // Ensure Chien cards are put 1 by 1 during dealing, not 1st or last card
+  const validChienPositions = [3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55, 59, 63, 67, 71];
+  
+  // Pick 6 unique positions out of validChienPositions
+  const selectedChienPositions = new Set();
+  while (selectedChienPositions.size < 6) {
+    const randomIndex = Math.floor(Math.random() * validChienPositions.length);
+    selectedChienPositions.add(validChienPositions[randomIndex]);
+  }
+
+  let currentPlayer = startPlayer;
+
+  for (let i = 0; i < 78; i++) {
+    if (selectedChienPositions.has(i)) {
+      chien.push(deck[i]);
+    } else {
+      hands[currentPlayer].push(deck[i]);
+      cardsDealtToPlayers++;
+      if (cardsDealtToPlayers % 3 === 0) {
+        currentPlayer = (currentPlayer + 1) % 4;
+      }
+    }
+  }
+
+  // Sort each player's hand nicely
+  hands.forEach((hand, idx) => {
+    hands[idx] = sortHand(hand);
+  });
+
+  return { hands, chien };
+}
+
+/**
+ * Sorts a hand by Trump (21 down to 1), Excuse, and Suits (Spade, Heart, Club, Diamond) high to low.
+ */
+function sortHand(hand) {
+  const suitOrder = {
+    [SUITS.EXCUSE]: 0,
+    [SUITS.TRUMP]: 1,
+    [SUITS.SPADE]: 2,
+    [SUITS.HEART]: 3,
+    [SUITS.CLUB]: 4,
+    [SUITS.DIAMOND]: 5
+  };
+
+  return [...hand].sort((a, b) => {
+    if (suitOrder[a.suit] !== suitOrder[b.suit]) {
+      return suitOrder[a.suit] - suitOrder[b.suit];
+    }
+    return b.value - a.value;
+  });
+}
+
+// --- src/engine/rules.js ---
+/**
+ * Returns legal cards that a player can play given the current trick state and player's hand.
+ * @param {Array} hand Array of Card objects in player's hand
+ * @param {Array} currentTrick Array of { playerId, card } objects played in current trick
+ * @returns {Array} Array of legal Card objects
+ */
+function getLegalMoves(hand, currentTrick = []) {
+  if (hand.length === 0) return [];
+  
+  // First card in trick: any card is legal
+  if (currentTrick.length === 0) {
+    return [...hand];
+  }
+
+  // Determine effective lead suit
+  const leadSuitInfo = getLeadSuit(currentTrick);
+  const leadSuit = leadSuitInfo ? leadSuitInfo.suit : null;
+
+  // If Excuse led and no non-excuse card played yet: any card is legal
+  if (!leadSuit) {
+    return [...hand];
+  }
+
+  const hasLeadSuit = hand.some(c => c.suit === leadSuit);
+  const trumpsInHand = hand.filter(c => c.suit === SUITS.TRUMP);
+  const excuseInHand = hand.find(c => c.suit === SUITS.EXCUSE);
+
+  // 1. If lead suit is NOT Trump
+  if (leadSuit !== SUITS.TRUMP) {
+    if (hasLeadSuit) {
+      // Must follow suit! (Or play Excuse)
+      const legal = hand.filter(c => c.suit === leadSuit || c.suit === SUITS.EXCUSE);
+      return legal;
+    }
+
+    // Cannot follow suit -> Must Trump (couper) if has trumps
+    if (trumpsInHand.length > 0) {
+      const highestTrumpInTrick = getHighestTrumpValueInTrick(currentTrick);
+      const higherTrumps = trumpsInHand.filter(c => c.value > highestTrumpInTrick);
+
+      let legalTrumps = [];
+      if (higherTrumps.length > 0) {
+        // Must overtrump!
+        legalTrumps = higherTrumps;
+      } else {
+        // Must undertrump (pisser)
+        legalTrumps = trumpsInHand;
+      }
+
+      if (excuseInHand) {
+        legalTrumps.push(excuseInHand);
+      }
+      return legalTrumps;
+    }
+
+    // Has no lead suit and no trumps -> Free discard (défausse)
+    return [...hand];
+  }
+
+  // 2. If lead suit IS Trump
+  if (trumpsInHand.length > 0) {
+    const highestTrumpInTrick = getHighestTrumpValueInTrick(currentTrick);
+    const higherTrumps = trumpsInHand.filter(c => c.value > highestTrumpInTrick);
+
+    let legalTrumps = [];
+    if (higherTrumps.length > 0) {
+      // Must overtrump!
+      legalTrumps = higherTrumps;
+    } else {
+      // Must undertrump
+      legalTrumps = trumpsInHand;
+    }
+
+    if (excuseInHand) {
+      legalTrumps.push(excuseInHand);
+    }
+    return legalTrumps;
+  }
+
+  // Lead suit is Trump, but player has NO trumps -> Free discard
+  return [...hand];
+}
+
+/**
+ * Determines the lead suit of the trick.
+ * Handles the Excuse lead case (if Excuse is 1st, 2nd card determines suit).
+ */
+function getLeadSuit(currentTrick) {
+  if (!currentTrick || currentTrick.length === 0) return null;
+
+  for (let play of currentTrick) {
+    if (play.card.suit !== SUITS.EXCUSE) {
+      return { suit: play.card.suit, card: play.card };
+    }
+  }
+
+  // If only Excuse played so far, no effective lead suit yet
+  return null;
+}
+
+/**
+ * Returns the highest value of Trump currently in the trick (0 if no Trump played).
+ */
+function getHighestTrumpValueInTrick(currentTrick) {
+  let highest = 0;
+  for (let play of currentTrick) {
+    if (play.card.suit === SUITS.TRUMP && play.card.value > highest) {
+      highest = play.card.value;
+    }
+  }
+  return highest;
+}
+
+/**
+ * Determines the winning played card object { playerId, card } of a completed trick (4 cards).
+ * @param {Array} currentTrick Array of { playerId, card }
+ * @param {boolean} isLastTrick True if this is trick 18
+ */
+function getTrickWinner(currentTrick, isLastTrick = false) {
+  if (currentTrick.length === 0) return null;
+
+  // Filter out Excuse (unless last trick special case where Excuse is lost)
+  const leadInfo = getLeadSuit(currentTrick);
+
+  // If ALL 4 cards are Excuse (impossible in 4 player, but safety), first player wins
+  if (!leadInfo) {
+    return currentTrick[0];
+  }
+
+  const trumpsPlayed = currentTrick.filter(p => p.card.suit === SUITS.TRUMP);
+
+  if (trumpsPlayed.length > 0) {
+    // Highest Trump wins
+    trumpsPlayed.sort((a, b) => b.card.value - a.card.value);
+    return trumpsPlayed[0];
+  }
+
+  // No Trump played -> Highest card of the lead suit wins
+  const suitPlayed = currentTrick.filter(p => p.card.suit === leadInfo.suit);
+  suitPlayed.sort((a, b) => b.card.value - a.card.value);
+  
+  return suitPlayed[0];
+}
+
+/**
+ * Validates whether putting a specific card into the Chien discard is allowed.
+ * Rule: Preneur cannot discard Kings or Bouts.
+ * Trumps can only be discarded if player has no other suit cards to discard.
+ */
+function isValidChienDiscard(card, playerHand, currentDiscard) {
+  // Bouts (Petit, 21, Excuse) can never be discarded
+  if (card.isBout) return false;
+  if (card.suit === SUITS.EXCUSE) return false;
+
+  // Kings (value 14) cannot be discarded (non-trump Kings only)
+  if (card.suit !== SUITS.TRUMP && card.value === 14) return false;
+
+  // Trumps can only be discarded if player has no non-Trump, non-King suit cards remaining (excluding already selected discards)
+  if (card.suit === SUITS.TRUMP) {
+    const discardIds = new Set((currentDiscard || []).map(c => c.id));
+    const availableNonTrump = playerHand.filter(c =>
+      !discardIds.has(c.id) &&
+      c.id !== card.id &&
+      c.suit !== SUITS.TRUMP &&
+      c.suit !== SUITS.EXCUSE &&
+      c.value !== 14
+    );
+    if (availableNonTrump.length > 0) {
+      return false; // Still has normal suit non-king cards to discard first
+    }
+  }
+
+  return true;
+}
+
+// --- src/engine/scoring.js ---
+/**
+ * Calculates final scores for a round of French Tarot.
+ * 
+ * @param {Object} params
+ * @param {number} params.takerId Player ID of preneur (0..3)
+ * @param {Object} params.contract Contract object from CONTRACTS
+ * @param {Array} params.takerCards Array of Card objects won by preneur
+ * @param {Array} params.defenseCards Array of Card objects won by defense
+ * @param {Array} params.chienCards Array of 6 Card objects in Chien
+ * @param {Object|null} params.petitAuBoutInfo Information about Petit au bout { winnerId: number, isPreneurWin: boolean }
+ * @returns {Object} Score result breakdown
+ */
+function calculateRoundScores({
+  takerId,
+  contract,
+  takerCards = [],
+  defenseCards = [],
+  chienCards = [],
+  petitAuBoutInfo = null
+}) {
+  let finalTakerCards = [...takerCards];
+  let finalDefenseCards = [...defenseCards];
+
+  // Distribute Chien:
+  // Petite, Garde, Garde Sans -> Chien goes to Preneur
+  // Garde Contre -> Chien goes to Defense
+  if (contract.id === CONTRACTS.GARDE_CONTRE.id) {
+    finalDefenseCards.push(...chienCards);
+  } else {
+    finalTakerCards.push(...chienCards);
+  }
+
+  // 1. Calculate points taken by preneur
+  const preneurPoints = finalTakerCards.reduce((sum, card) => sum + card.points, 0);
+  const defensePoints = finalDefenseCards.reduce((sum, card) => sum + card.points, 0);
+
+  // 2. Count bouts taken by preneur
+  const preneurBouts = finalTakerCards.filter(card => isBout(card)).length;
+
+  // 3. Determine point target based on bouts
+  let pointTarget = 56;
+  if (preneurBouts === 3) pointTarget = 36;
+  else if (preneurBouts === 2) pointTarget = 41;
+  else if (preneurBouts === 1) pointTarget = 51;
+
+  // 4. Difference
+  const diff = preneurPoints - pointTarget;
+  const isWon = diff >= 0;
+
+  // Round difference (FFT standard rounds to nearest whole number if half-points)
+  const absoluteDiff = Math.abs(diff);
+
+  // 5. Petit au bout
+  let petitAuBoutPoints = 0;
+  if (petitAuBoutInfo) {
+    if (petitAuBoutInfo.isPreneurWin) {
+      // Preneur won the last trick with Petit
+      petitAuBoutPoints = 10;
+    } else {
+      // Defense won the last trick containing Petit
+      petitAuBoutPoints = -10;
+    }
+  }
+
+  // 6. Calculate total base
+  // Base = (25 + Math.abs(diff) + petitAuBout) * multiplier
+  let baseScore = 25 + absoluteDiff;
+  
+  let preneurContractValue = 0;
+  if (isWon) {
+    preneurContractValue = (baseScore + petitAuBoutPoints) * contract.multiplier;
+  } else {
+    // Contract lost: base is negative, petit au bout adds or subtracts accordingly
+    preneurContractValue = (-baseScore + petitAuBoutPoints) * contract.multiplier;
+  }
+
+  // 7. Player scores breakdown
+  const playerScores = {};
+  for (let id = 0; id < 4; id++) {
+    if (id === takerId) {
+      playerScores[id] = Math.round(preneurContractValue * 3);
+    } else {
+      playerScores[id] = Math.round(-preneurContractValue);
+    }
+  }
+
+  return {
+    takerId,
+    contract,
+    preneurPoints: Math.round(preneurPoints * 10) / 10,
+    defensePoints: Math.round(defensePoints * 10) / 10,
+    preneurBouts,
+    pointTarget,
+    diff: Math.round(diff * 10) / 10,
+    isWon,
+    petitAuBoutPoints,
+    preneurContractValue,
+    playerScores
+  };
+}
+
+// --- src/engine/bidding.js ---
+/**
+ * Bidding state manager for French Tarot
+ */
+class BiddingEngine {
+  constructor(firstPlayerId = 0) {
+    this.firstPlayerId = firstPlayerId;
+    this.currentPlayerId = firstPlayerId;
+    this.bids = []; // { playerId, contract }
+    this.highestBid = CONTRACTS.PASSE;
+    this.takerId = null; // Preneur
+    this.isComplete = false;
+  }
+
+  /**
+   * Returns list of valid contracts for current player.
+   */
+  getValidContracts() {
+    if (this.isComplete) return [];
+
+    const valid = [CONTRACTS.PASSE];
+    const currentMaxPriority = this.highestBid.priority;
+
+    Object.values(CONTRACTS).forEach(contract => {
+      if (contract.priority > currentMaxPriority) {
+        valid.push(contract);
+      }
+    });
+
+    return valid;
+  }
+
+  /**
+   * Player places a bid.
+   * @param {number} playerId 
+   * @param {Object} contract 
+   */
+  placeBid(playerId, contract) {
+    if (this.isComplete) {
+      throw new Error('Bidding phase is already complete.');
+    }
+    if (playerId !== this.currentPlayerId) {
+      throw new Error(`It is player ${this.currentPlayerId}'s turn to bid, not ${playerId}.`);
+    }
+
+    const validContracts = this.getValidContracts();
+    if (!validContracts.some(c => c.id === contract.id)) {
+      throw new Error(`Invalid bid "${contract.name}". Must be higher than current contract "${this.highestBid.name}".`);
+    }
+
+    this.bids.push({ playerId, contract });
+
+    if (contract.priority > this.highestBid.priority) {
+      this.highestBid = contract;
+      this.takerId = playerId;
+    }
+
+    // Move to next player
+    if (this.bids.length < 4) {
+      this.currentPlayerId = (this.currentPlayerId + 1) % 4;
+    } else {
+      this.isComplete = true;
+    }
+
+    return {
+      bid: contract,
+      highestBid: this.highestBid,
+      takerId: this.takerId,
+      isComplete: this.isComplete
+    };
+  }
+}
+
+// --- src/engine/ai.js ---
+/**
+ * AI Logic for French Tarot (3 AI opponents: Joueur 1, Joueur 2, Joueur 3)
+ */
+class TarotAI {
+
+  /**
+   * Evaluates hand and chooses the best bid for an AI player.
+   * @param {Array} hand Array of cards in AI player's hand
+   * @param {Object} currentHighestBid Highest bid so far
+   * @returns {Object} CONTRACTS object (PASSE, PETITE, GARDE, etc.)
+   */
+  static chooseBid(hand, currentHighestBid = CONTRACTS.PASSE) {
+    const evalScore = this.evaluateHandForBidding(hand);
+
+    let chosenContract = CONTRACTS.PASSE;
+
+    if (evalScore >= 70) {
+      chosenContract = CONTRACTS.GARDE;
+    } else if (evalScore >= 48) {
+      chosenContract = CONTRACTS.PETITE;
+    } else {
+      chosenContract = CONTRACTS.PASSE;
+    }
+
+    // Must be strictly higher than current highest bid
+    if (chosenContract.priority <= currentHighestBid.priority) {
+      return CONTRACTS.PASSE;
+    }
+
+    return chosenContract;
+  }
+
+  /**
+   * Hand evaluation score calculation for French Tarot.
+   */
+  static evaluateHandForBidding(hand) {
+    let score = 0;
+
+    const trumps = hand.filter(c => c.suit === SUITS.TRUMP);
+    const excuse = hand.find(c => c.suit === SUITS.EXCUSE);
+    const bouts = hand.filter(c => isBout(c));
+
+    // 1. Trumps quantity & quality
+    score += trumps.length * 3.5;
+    trumps.forEach(t => {
+      if (t.value >= 18) score += 5;
+      else if (t.value >= 12) score += 2.5;
+    });
+
+    // 2. Bouts
+    score += bouts.length * 10;
+    if (bouts.length === 3) score += 15; // All 3 bouts = huge advantage!
+
+    // 3. High cards in suits
+    const suitCounts = { [SUITS.SPADE]: 0, [SUITS.HEART]: 0, [SUITS.DIAMOND]: 0, [SUITS.CLUB]: 0 };
+
+    hand.forEach(c => {
+      if (suitCounts[c.suit] !== undefined) {
+        suitCounts[c.suit]++;
+        if (c.value === 14) score += 6;       // King
+        else if (c.value === 13) score += 4;  // Queen
+        else if (c.value === 12) score += 2;  // Knight
+        else if (c.value === 11) score += 1;  // Jack
+      }
+    });
+
+    // 4. Distribution (Voids and Singletons give trumping opportunities)
+    Object.values(suitCounts).forEach(count => {
+      if (count === 0) score += 6;      // Void (coupe franque)
+      else if (count === 1) score += 3.5; // Singleton
+    });
+
+    return score;
+  }
+
+  /**
+   * AI preneur chooses 6 cards to discard into the Chien.
+   * @param {Array} fullHand 24 cards (18 hand + 6 chien)
+   * @returns {Array} 6 discarded cards
+   */
+  static chooseChienDiscard(fullHand) {
+    const discard = [];
+    const hand = [...fullHand];
+
+    // Count suit frequencies to target singletons/doubletons first
+    const suitCounts = {
+      [SUITS.SPADE]: hand.filter(c => c.suit === SUITS.SPADE).length,
+      [SUITS.HEART]: hand.filter(c => c.suit === SUITS.HEART).length,
+      [SUITS.DIAMOND]: hand.filter(c => c.suit === SUITS.DIAMOND).length,
+      [SUITS.CLUB]: hand.filter(c => c.suit === SUITS.CLUB).length
+    };
+
+    // Sort suits by shortest count first (excluding suits with 0 cards)
+    const sortedSuits = Object.keys(suitCounts)
+      .filter(suit => suitCounts[suit] > 0)
+      .sort((a, b) => suitCounts[a] - suitCounts[b]);
+
+    // Priority 1: Discard cards from shortest non-king suit
+    for (const suit of sortedSuits) {
+      if (discard.length >= 6) break;
+
+      const suitCards = hand
+        .filter(c => c.suit === suit && !discard.includes(c))
+        .sort((a, b) => a.value - b.value); // Discard lowest value first
+
+      for (const card of suitCards) {
+        if (discard.length >= 6) break;
+        if (isValidChienDiscard(card, hand, discard)) {
+          discard.push(card);
+        }
+      }
+    }
+
+    // Priority 2: Fill remaining discard with any non-king, non-bout suit cards
+    if (discard.length < 6) {
+      const remainingSuitCards = hand
+        .filter(c => c.suit !== SUITS.TRUMP && c.suit !== SUITS.EXCUSE && !discard.includes(c))
+        .sort((a, b) => a.value - b.value);
+
+      for (const card of remainingSuitCards) {
+        if (discard.length >= 6) break;
+        if (isValidChienDiscard(card, hand, discard)) {
+          discard.push(card);
+        }
+      }
+    }
+
+    // Priority 3: Discard non-bout trumps if strictly forced
+    if (discard.length < 6) {
+      const remainingTrumps = hand
+        .filter(c => c.suit === SUITS.TRUMP && !c.isBout && !discard.includes(c))
+        .sort((a, b) => a.value - b.value);
+
+      for (const card of remainingTrumps) {
+        if (discard.length >= 6) break;
+        if (isValidChienDiscard(card, hand, discard)) {
+          discard.push(card);
+        }
+      }
+    }
+
+    return discard;
+  }
+
+  /**
+   * AI chooses the best card to play in the current trick.
+   * @param {Object} context 
+   * @returns {Object} Selected Card object
+   */
+  static choosePlayCard({
+    playerId,
+    hand,
+    legalMoves,
+    currentTrick,
+    takerId,
+    tricksHistory = []
+  }) {
+    if (!legalMoves || legalMoves.length === 0) return null;
+    if (legalMoves.length === 1) return legalMoves[0];
+
+    const isPreneur = (playerId === takerId);
+    const positionInTrick = currentTrick.length; // 0, 1, 2, 3
+
+    // 1. First to lead (Position 0)
+    if (positionInTrick === 0) {
+      if (isPreneur) {
+        // Preneur lead: If holding strong trumps, lead high trump to pull defense trumps
+        const trumps = legalMoves.filter(c => c.suit === SUITS.TRUMP);
+        const highTrump = trumps.find(c => c.value >= 15);
+        if (highTrump && trumps.length >= 5) {
+          return highTrump;
+        }
+
+        // Otherwise lead a King or a long suit winner
+        const king = legalMoves.find(c => c.value === 14 && c.suit !== SUITS.TRUMP);
+        if (king) return king;
+
+        // Otherwise lead lowest card of a suit
+        const suitCards = legalMoves.filter(c => c.suit !== SUITS.TRUMP && c.suit !== SUITS.EXCUSE);
+        if (suitCards.length > 0) {
+          return suitCards.sort((a, b) => a.value - b.value)[0];
+        }
+        return legalMoves[0];
+      } else {
+        // Defense lead: Lead King if held
+        const king = legalMoves.find(c => c.value === 14 && c.suit !== SUITS.TRUMP);
+        if (king) return king;
+
+        // Lead a non-trump suit card
+        const suitCards = legalMoves.filter(c => c.suit !== SUITS.TRUMP && c.suit !== SUITS.EXCUSE);
+        if (suitCards.length > 0) {
+          return suitCards.sort((a, b) => b.value - a.value)[0];
+        }
+        return legalMoves[0];
+      }
+    }
+
+    // 2. Positions 1, 2, 3
+    const leadInfo = getLeadSuit(currentTrick);
+    const leadSuit = leadInfo ? leadInfo.suit : null;
+
+    // Determine who is currently winning the trick
+    const currentWinningPlay = this.getWinningPlaySoFar(currentTrick);
+    const isPartnerWinning = currentWinningPlay ? (
+      isPreneur ? (currentWinningPlay.playerId === takerId) : (currentWinningPlay.playerId !== takerId)
+    ) : false;
+
+    // A. Partner is winning the trick
+    if (isPartnerWinning) {
+      // Don't waste a bout or high card if partner already has it won
+      const safeMoves = legalMoves.filter(c => !c.isBout);
+      const candidates = safeMoves.length > 0 ? safeMoves : legalMoves;
+
+      // Provide highest points (King/Queen) if safe to give points to partner
+      const highPointCard = candidates.sort((a, b) => b.points - a.points)[0];
+      if (highPointCard && highPointCard.points > 0.5) {
+        return highPointCard;
+      }
+      // Play lowest card
+      return candidates.sort((a, b) => a.value - b.value)[0];
+    }
+
+    // B. Opponent is winning the trick
+    // Try to win the trick cheaply if possible
+    const winningMoves = legalMoves.filter(card => {
+      const simulatedTrick = [...currentTrick, { playerId, card }];
+      const winner = this.getWinningPlaySoFar(simulatedTrick);
+      return winner && winner.playerId === playerId;
+    });
+
+    if (winningMoves.length > 0) {
+      // Filter out bouts if not last position unless necessary
+      const nonBoutWinning = winningMoves.filter(c => !c.isBout);
+      const chosenMoves = nonBoutWinning.length > 0 ? nonBoutWinning : winningMoves;
+      // Win with lowest winning card
+      return chosenMoves.sort((a, b) => a.value - b.value)[0];
+    }
+
+    // C. Cannot win the trick -> Play lowest value card or save bout with Excuse
+    const excuse = legalMoves.find(c => c.suit === SUITS.EXCUSE);
+    if (excuse && currentTrick.some(p => p.card.points >= 3.5)) {
+      return excuse; // Save points by playing Excuse
+    }
+
+    // Play lowest value card
+    const nonBouts = legalMoves.filter(c => !c.isBout);
+    const fallback = nonBouts.length > 0 ? nonBouts : legalMoves;
+    return fallback.sort((a, b) => a.value - b.value)[0];
+  }
+
+  static getWinningPlaySoFar(currentTrick) {
+    if (!currentTrick || currentTrick.length === 0) return null;
+    const leadInfo = getLeadSuit(currentTrick);
+    if (!leadInfo) return currentTrick[0];
+
+    const trumps = currentTrick.filter(p => p.card.suit === SUITS.TRUMP);
+    if (trumps.length > 0) {
+      return trumps.sort((a, b) => b.card.value - a.card.value)[0];
+    }
+
+    const suitPlays = currentTrick.filter(p => p.card.suit === leadInfo.suit);
+    if (suitPlays.length > 0) {
+      return suitPlays.sort((a, b) => b.card.value - a.card.value)[0];
+    }
+
+    return currentTrick[0];
+  }
+}
+
+// --- src/engine/stateMachine.js ---
+class GameStateMachine {
+  constructor(players = DEFAULT_PLAYERS) {
+    this.players = players.map(p => ({
+      ...p,
+      hand: [],
+      wonCards: []
+    }));
+    this.totalScores = { 0: 0, 1: 0, 2: 0, 3: 0 };
+    this.dealerId = 3; // Initial dealer (Player 0 will start bidding on 1st round)
+    this.resetRound();
+  }
+
+  resetRound() {
+    this.phase = GAME_PHASES.DEALING;
+    this.dealerId = (this.dealerId + 1) % 4;
+    this.firstBidderId = (this.dealerId + 1) % 4;
+    this.currentTurnPlayerId = this.firstBidderId;
+    
+    this.players.forEach(p => {
+      p.hand = [];
+      p.wonCards = [];
+      p.isPreneur = false;
+    });
+
+    this.chien = [];
+    this.originalChien = [];
+    this.biddingEngine = null;
+    this.takerId = null;
+    this.contract = CONTRACTS.PASSE;
+
+    this.currentTrick = []; // [{ playerId, card }]
+    this.tricksHistory = []; // Array of completed tricks
+    this.trickCount = 0;
+    this.petitAuBoutInfo = null;
+    this.excuseOwners = []; // { playerId, playedInTrickIndex }
+    this.roundResult = null;
+  }
+
+  startNewRound() {
+    this.resetRound();
+    const deck = shuffleDeck(createDeck());
+    const { hands, chien } = dealCards(deck, this.dealerId);
+
+    this.players.forEach((player, idx) => {
+      player.hand = hands[idx];
+    });
+    this.chien = chien;
+    this.originalChien = [...chien];
+
+    this.biddingEngine = new BiddingEngine(this.firstBidderId);
+    this.phase = GAME_PHASES.BIDDING;
+    this.currentTurnPlayerId = this.firstBidderId;
+  }
+
+  processBid(contract) {
+    if (this.phase !== GAME_PHASES.BIDDING) {
+      throw new Error('Not in bidding phase');
+    }
+
+    const currentPlayer = this.players[this.currentTurnPlayerId];
+    const result = this.biddingEngine.placeBid(currentPlayer.id, contract);
+
+    if (result.isComplete) {
+      if (this.biddingEngine.highestBid.id === CONTRACTS.PASSE.id) {
+        // Everyone passed! Redeal round
+        this.startNewRound();
+        return { isRedeal: true };
+      }
+
+      // We have a taker!
+      this.takerId = result.takerId;
+      this.contract = result.highestBid;
+      this.players.forEach(p => {
+        p.isPreneur = (p.id === this.takerId);
+      });
+
+      // Handle Chien transition
+      if (this.contract.id === CONTRACTS.PETITE.id || this.contract.id === CONTRACTS.GARDE.id) {
+        this.phase = GAME_PHASES.CHIEN_REVEAL;
+      } else {
+        // Garde Sans or Garde Contre -> Skip discard phase directly to playing
+        this.phase = GAME_PHASES.PLAYING;
+        this.currentTurnPlayerId = this.firstBidderId;
+      }
+    } else {
+      this.currentTurnPlayerId = this.biddingEngine.currentPlayerId;
+    }
+
+    return {
+      bid: contract,
+      highestBid: this.biddingEngine.highestBid,
+      takerId: this.takerId,
+      isComplete: this.biddingEngine.isComplete,
+      phase: this.phase
+    };
+  }
+
+  /**
+   * Called when Preneur reveals and takes the Chien into their hand.
+   */
+  takeChien() {
+    if (this.phase !== GAME_PHASES.CHIEN_REVEAL) return;
+    const taker = this.players[this.takerId];
+    taker.hand = sortHand([...taker.hand, ...this.chien]);
+    this.phase = GAME_PHASES.CHIEN_DISCARD;
+  }
+
+  /**
+   * Discards 6 cards into Chien (Écart) by Preneur.
+   * @param {Array} discardedCards 6 Card objects
+   */
+  confirmChienDiscard(discardedCards) {
+    if (this.phase !== GAME_PHASES.CHIEN_DISCARD) {
+      throw new Error('Not in chien discard phase');
+    }
+    if (discardedCards.length !== 6) {
+      throw new Error('Must discard exactly 6 cards');
+    }
+
+    const taker = this.players[this.takerId];
+    const validHandCardIds = new Set(taker.hand.map(c => c.id));
+
+    for (let card of discardedCards) {
+      if (!validHandCardIds.has(card.id)) {
+        throw new Error(`Card ${card.name} is not in taker's hand`);
+      }
+    }
+
+    // Remove discarded cards from taker hand
+    const discardIds = new Set(discardedCards.map(c => c.id));
+    taker.hand = taker.hand.filter(c => !discardIds.has(c.id));
+    
+    // Store remaining chien / écart
+    this.chien = discardedCards;
+
+    // Move to playing phase starting with player right of dealer
+    this.phase = GAME_PHASES.PLAYING;
+    this.currentTurnPlayerId = this.firstBidderId;
+  }
+
+  playCard(playerId, card) {
+    if (this.phase !== GAME_PHASES.PLAYING) {
+      throw new Error('Not in playing phase');
+    }
+    if (playerId !== this.currentTurnPlayerId) {
+      throw new Error(`It is player ${this.currentTurnPlayerId}'s turn, not player ${playerId}`);
+    }
+
+    const player = this.players[playerId];
+    const legalMoves = getLegalMoves(player.hand, this.currentTrick);
+    
+    if (!legalMoves.some(c => c.id === card.id)) {
+      throw new Error(`Illegal move: ${card.name}`);
+    }
+
+    // Remove card from hand
+    player.hand = player.hand.filter(c => c.id !== card.id);
+
+    // Add to current trick
+    this.currentTrick.push({ playerId, card });
+
+    let trickCompleted = false;
+    let winningPlay = null;
+
+    if (this.currentTrick.length === 4) {
+      trickCompleted = true;
+      this.trickCount++;
+      const isLastTrick = (this.trickCount === 18);
+
+      winningPlay = getTrickWinner(this.currentTrick, isLastTrick);
+      const winnerId = winningPlay.playerId;
+      const winnerPlayer = this.players[winnerId];
+
+      // Check Petit au bout (1 of Trump played on trick 18)
+      if (isLastTrick) {
+        const petitPlay = this.currentTrick.find(p => p.card.suit === 'trump' && p.card.value === 1);
+        if (petitPlay) {
+          const isPreneurWin = (winnerPlayer.isPreneur);
+          this.petitAuBoutInfo = {
+            winnerId,
+            isPreneurWin,
+            playedByPlayerId: petitPlay.playerId
+          };
+        }
+      }
+
+      // Add trick cards to winner's won pile (handling Excuse rule)
+      this.currentTrick.forEach(play => {
+        if (play.card.suit === 'excuse' && !isLastTrick) {
+          // Player who played Excuse keeps Excuse in their wonCards
+          this.players[play.playerId].wonCards.push(play.card);
+        } else {
+          winnerPlayer.wonCards.push(play.card);
+        }
+      });
+
+      this.tricksHistory.push({
+        trickIndex: this.trickCount,
+        trick: [...this.currentTrick],
+        winnerId
+      });
+
+      // Next trick leader is winner
+      this.currentTurnPlayerId = winnerId;
+      this.currentTrick = [];
+
+      // Check end of round (18 tricks completed)
+      if (this.trickCount === 18) {
+        this.finishRound();
+      }
+    } else {
+      // Next player in trick
+      this.currentTurnPlayerId = (this.currentTurnPlayerId + 1) % 4;
+    }
+
+    return {
+      playerId,
+      card,
+      trickCompleted,
+      winningPlay,
+      nextPlayerId: this.currentTurnPlayerId,
+      phase: this.phase,
+      roundResult: this.roundResult
+    };
+  }
+
+  finishRound() {
+    this.phase = GAME_PHASES.SCORING;
+
+    const taker = this.players[this.takerId];
+    const defenseCards = [];
+
+    this.players.forEach(p => {
+      if (!p.isPreneur) {
+        defenseCards.push(...p.wonCards);
+      }
+    });
+
+    const result = calculateRoundScores({
+      takerId: this.takerId,
+      contract: this.contract,
+      takerCards: taker.wonCards,
+      defenseCards,
+      chienCards: this.chien,
+      petitAuBoutInfo: this.petitAuBoutInfo
+    });
+
+    // Update total scores
+    for (let id = 0; id < 4; id++) {
+      this.totalScores[id] += result.playerScores[id];
+    }
+
+    this.roundResult = result;
+    return result;
+  }
+}
+
+// --- src/components/cardRenderer.js ---
+/**
+ * Creates DOM card element for French Tarot cards.
+ */
+class CardRenderer {
+  /**
+   * Render a card element.
+   * @param {Object} card Card object
+   * @param {Object} options { isFaceDown, isPlayable, isSelected, onClick }
+   */
+  static renderCard(card, options = {}) {
+    const cardEl = document.createElement('div');
+    cardEl.className = 'tarot-card';
+
+    if (options.isFaceDown) {
+      cardEl.classList.add('back');
+      return cardEl;
+    }
+
+    cardEl.dataset.cardId = card.id;
+    cardEl.dataset.suit = card.suit;
+
+    if (options.isPlayable) cardEl.classList.add('playable');
+    if (options.isSelected) cardEl.classList.add('selected');
+    if (options.isDisabled) cardEl.classList.add('disabled');
+
+    // Rank text representation
+    let rankText = `${card.value}`;
+    if (card.suit !== SUITS.TRUMP && card.suit !== SUITS.EXCUSE) {
+      if (card.value === 14) rankText = 'R';
+      else if (card.value === 13) rankText = 'D';
+      else if (card.value === 12) rankText = 'C';
+      else if (card.value === 11) rankText = 'V';
+    } else if (card.suit === SUITS.EXCUSE) {
+      rankText = 'E';
+    }
+
+    const symbol = card.symbol || '★';
+
+    // 1. Top Banner for Trump / Excuse
+    if (card.suit === SUITS.TRUMP) {
+      const banner = document.createElement('div');
+      banner.className = 'trump-header-banner';
+      banner.innerText = card.value === 1 ? 'PETIT' : (card.value === 21 ? '21 ATOUT' : `ATOUT ${card.value}`);
+      cardEl.appendChild(banner);
+    } else if (card.suit === SUITS.EXCUSE) {
+      const banner = document.createElement('div');
+      banner.className = 'excuse-header-banner';
+      banner.innerText = 'EXCUSE';
+      cardEl.appendChild(banner);
+    }
+
+    // 2. Top Left Corner
+    const topLeft = document.createElement('div');
+    topLeft.className = 'card-corner top-left';
+    topLeft.innerHTML = `<div>${rankText}</div>${card.suit !== SUITS.TRUMP && card.suit !== SUITS.EXCUSE ? `<div class="suit-symbol">${symbol}</div>` : ''}`;
+
+    // 3. Center Content
+    const center = document.createElement('div');
+    center.className = 'card-center';
+
+    if (card.suit === SUITS.TRUMP) {
+      center.innerHTML = `
+        <div class="trump-frame">
+          <div class="trump-number">${card.value}</div>
+          ${card.isBout ? '<div class="bout-badge">BOUT</div>' : ''}
+        </div>
+      `;
+    } else if (card.suit === SUITS.EXCUSE) {
+      center.innerHTML = `
+        <div class="trump-frame" style="background: rgba(255,255,255,0.25); border-color: #facc15;">
+          <div class="court-art">🃏</div>
+          <div class="bout-badge">BOUT</div>
+        </div>
+      `;
+    } else {
+      // Court cards vs pip cards
+      if (card.value >= 11) {
+        let icon = '♟️';
+        if (card.value === 14) icon = '👑';
+        else if (card.value === 13) icon = '👸';
+        else if (card.value === 12) icon = '🐴';
+        else if (card.value === 11) icon = '🛡️';
+        center.innerHTML = `<div class="court-art">${icon}</div>`;
+      } else {
+        center.innerHTML = `<div class="suit-pip-center">${symbol}</div>`;
+      }
+    }
+
+    // 4. Bottom Right Corner
+    const bottomRight = document.createElement('div');
+    bottomRight.className = 'card-corner bottom-right';
+    bottomRight.innerHTML = `<div>${rankText}</div>${card.suit !== SUITS.TRUMP && card.suit !== SUITS.EXCUSE ? `<div class="suit-symbol">${symbol}</div>` : ''}`;
+
+    cardEl.appendChild(topLeft);
+    cardEl.appendChild(center);
+    cardEl.appendChild(bottomRight);
+
+    if (options.onClick) {
+      cardEl.addEventListener('click', (e) => {
+        e.stopPropagation();
+        options.onClick(card);
+      });
+    }
+
+    return cardEl;
+  }
+}
+
+// --- src/components/audioManager.js ---
+/**
+ * Procedural Audio Synthesizer for Tarot Game using Web Audio API
+ */
+class AudioManager {
+  constructor() {
+    this.ctx = null;
+    this.muted = false;
+  }
+
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) {
+        this.ctx = new AudioCtx();
+      }
+    }
+  }
+
+  playCardSlide() {
+    if (this.muted || !this.ctx) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(120, this.ctx.currentTime + 0.08);
+
+      gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.08);
+    } catch (e) {
+      // Audio context policy guard
+    }
+  }
+
+  playCardSnap() {
+    if (this.muted || !this.ctx) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(250, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(60, this.ctx.currentTime + 0.06);
+
+      gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.06);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.06);
+    } catch (e) {}
+  }
+
+  playBidChime() {
+    if (this.muted || !this.ctx) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, this.ctx.currentTime); // C5
+      osc.frequency.setValueAtTime(659.25, this.ctx.currentTime + 0.1); // E5
+
+      gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.3);
+    } catch (e) {}
+  }
+
+  playTrickSweep() {
+    if (this.muted || !this.ctx) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.15);
+
+      gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.15);
+    } catch (e) {}
+  }
+
+  playFanfare() {
+    if (this.muted || !this.ctx) return;
+    try {
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, i) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.12);
+        gain.gain.setValueAtTime(0.3, this.ctx.currentTime + i * 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + i * 0.12 + 0.3);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(this.ctx.currentTime + i * 0.12);
+        osc.stop(this.ctx.currentTime + i * 0.12 + 0.3);
+      });
+    } catch (e) {}
+  }
+}
+
+// --- src/components/uiController.js ---
+class UIController {
+  constructor(audioManager) {
+    this.audio = audioManager;
+    this.game = new GameStateMachine(DEFAULT_PLAYERS);
+    this.selectedChienCards = [];
+    this.isProcessingAI = false;
+  }
+
+  init() {
+    this.bindDOM();
+    this.startNewHand();
+  }
+
+  bindDOM() {
+    this.dom = {
+      biddingModal: document.getElementById('bidding-modal'),
+      biddingOptions: document.getElementById('bidding-options'),
+      biddingTitle: document.getElementById('bidding-title'),
+      chienModal: document.getElementById('chien-modal'),
+      chienContainer: document.getElementById('chien-cards-container'),
+      confirmChienBtn: document.getElementById('confirm-chien-btn'),
+      chienInstructions: document.getElementById('chien-instructions'),
+      scoringModal: document.getElementById('scoring-modal'),
+      scoringDetails: document.getElementById('scoring-details'),
+      nextRoundBtn: document.getElementById('next-round-btn'),
+      humanHand: document.getElementById('human-hand'),
+      trickArea: document.getElementById('trick-area'),
+      centerInfo: document.getElementById('center-info'),
+      playerSlots: {
+        0: document.getElementById('player-south'),
+        1: document.getElementById('player-west'),
+        2: document.getElementById('player-north'),
+        3: document.getElementById('player-east')
+      },
+      playerBubbles: {
+        0: document.getElementById('bubble-south'),
+        1: document.getElementById('bubble-west'),
+        2: document.getElementById('bubble-north'),
+        3: document.getElementById('bubble-east')
+      },
+      playerScores: {
+        0: document.getElementById('score-south'),
+        1: document.getElementById('score-west'),
+        2: document.getElementById('score-north'),
+        3: document.getElementById('score-east')
+      }
+    };
+
+    if (this.dom.nextRoundBtn) {
+      this.dom.nextRoundBtn.addEventListener('click', () => {
+        this.dom.scoringModal.style.display = 'none';
+        this.startNewHand();
+      });
+    }
+
+    if (this.dom.confirmChienBtn) {
+      this.dom.confirmChienBtn.addEventListener('click', () => {
+        this.onConfirmChienDiscard();
+      });
+    }
+  }
+
+  startNewHand() {
+    this.selectedChienCards = [];
+    this.game.startNewRound();
+    this.audio.playCardSlide();
+    this.updateTableUI();
+    this.processCurrentPhase();
+  }
+
+  updateTableUI() {
+    // 1. Update Player Slots & Total Scores
+    this.game.players.forEach(p => {
+      const slot = this.dom.playerSlots[p.id];
+      if (!slot) return;
+
+      const isCurrentTurn = (this.game.currentTurnPlayerId === p.id);
+      slot.classList.toggle('active-turn', isCurrentTurn);
+
+      // Preneur badge
+      let badge = slot.querySelector('.preneur-badge');
+      if (p.isPreneur) {
+        if (!badge) {
+          badge = document.createElement('div');
+          badge.className = 'preneur-badge';
+          badge.innerText = 'Preneur';
+          slot.querySelector('.avatar-box').appendChild(badge);
+        }
+      } else if (badge) {
+        badge.remove();
+      }
+
+      const scoreEl = this.dom.playerScores[p.id];
+      if (scoreEl) {
+        const total = this.game.totalScores[p.id];
+        scoreEl.innerText = `${total >= 0 ? '+' : ''}${total} pts`;
+      }
+    });
+
+    // 2. Update Center Info
+    if (this.dom.centerInfo) {
+      if (this.game.phase === GAME_PHASES.PLAYING) {
+        this.dom.centerInfo.innerHTML = `
+          <span>Contrat: <strong>${this.game.contract.name}</strong></span>
+          <span>Pli: <strong>${this.game.trickCount + 1} / 18</strong></span>
+        `;
+      } else if (this.game.phase === GAME_PHASES.BIDDING) {
+        this.dom.centerInfo.innerHTML = `<span>Phase: <strong>Annonces</strong></span>`;
+      } else {
+        this.dom.centerInfo.innerHTML = `<span>Phase: <strong>${this.game.phase}</strong></span>`;
+      }
+    }
+
+    // 3. Render Human Hand (ALWAYS visible so player can examine cards)
+    this.renderHumanHand();
+
+    // 4. Render Center Trick Cards
+    this.renderTrickCards();
+  }
+
+  renderHumanHand() {
+    const human = this.game.players[0];
+    this.dom.humanHand.innerHTML = '';
+
+    const handWrapper = document.createElement('div');
+    handWrapper.className = 'hand-cards-wrapper';
+
+    const count = human.hand.length;
+    if (count === 0) return;
+
+    // Compact hand calculation: max width around 580px for 18 cards
+    const containerWidth = Math.min(640, Math.max(320, (window.innerWidth || 800) - 100));
+    const cardOffset = count > 1 ? Math.min(28, Math.max(16, (containerWidth - 70) / (count - 1))) : 0;
+    const startX = -(count - 1) * cardOffset / 2;
+
+    const isPlayingTurn = (this.game.phase === GAME_PHASES.PLAYING && this.game.currentTurnPlayerId === 0);
+    const legalMoves = isPlayingTurn ? getLegalMoves(human.hand, this.game.currentTrick) : [];
+
+    human.hand.forEach((card, index) => {
+      // During trick play, highlight legal cards; during bidding/discard, all hand cards are enabled
+      const isPlayable = isPlayingTurn ? legalMoves.some(c => c.id === card.id) : false;
+      const isSelected = this.selectedChienCards.some(c => c.id === card.id);
+
+      const cardEl = CardRenderer.renderCard(card, {
+        isPlayable,
+        isSelected,
+        onClick: (c) => this.onHumanCardClick(c)
+      });
+
+      cardEl.className += ' hand-card-item';
+      
+      const posX = Math.round(startX + index * cardOffset);
+      cardEl.style.setProperty('--card-x', `${posX}px`);
+      cardEl.style.zIndex = index + 1;
+
+      handWrapper.appendChild(cardEl);
+    });
+
+    this.dom.humanHand.appendChild(handWrapper);
+  }
+
+  renderTrickCards() {
+    this.dom.trickArea.innerHTML = '';
+
+    this.game.currentTrick.forEach(play => {
+      const player = this.game.players[play.playerId];
+      const cardEl = CardRenderer.renderCard(play.card);
+      
+      const wrapper = document.createElement('div');
+      wrapper.className = 'trick-card-slot';
+      wrapper.dataset.position = player.position;
+      wrapper.appendChild(cardEl);
+
+      this.dom.trickArea.appendChild(wrapper);
+    });
+  }
+
+  showSpeechBubble(playerId, text, durationMs = 2000) {
+    const bubble = this.dom.playerBubbles[playerId];
+    if (!bubble) return;
+
+    bubble.innerText = text;
+    bubble.classList.add('visible');
+
+    setTimeout(() => {
+      bubble.classList.remove('visible');
+    }, durationMs);
+  }
+
+  processCurrentPhase() {
+    this.updateTableUI();
+
+    switch (this.game.phase) {
+      case GAME_PHASES.BIDDING:
+        this.processBiddingTurn();
+        break;
+
+      case GAME_PHASES.CHIEN_REVEAL:
+        this.processChienReveal();
+        break;
+
+      case GAME_PHASES.CHIEN_DISCARD:
+        this.processChienDiscard();
+        break;
+
+      case GAME_PHASES.PLAYING:
+        this.processPlayingTurn();
+        break;
+
+      case GAME_PHASES.SCORING:
+        this.showScoringModal();
+        break;
+    }
+  }
+
+  // --- BIDDING PHASE ---
+  processBiddingTurn() {
+    const currentId = this.game.currentTurnPlayerId;
+    const player = this.game.players[currentId];
+
+    if (player.isHuman) {
+      this.showHumanBiddingModal();
+    } else {
+      // AI Bidding Turn
+      this.dom.biddingModal.style.display = 'none';
+      setTimeout(() => {
+        const bid = TarotAI.chooseBid(player.hand, this.game.biddingEngine.highestBid);
+        this.showSpeechBubble(player.id, bid.name);
+        this.audio.playBidChime();
+
+        const result = this.game.processBid(bid);
+        if (result.isRedeal) {
+          this.showSpeechBubble(0, 'Tout le monde passe ! Redistribution...');
+        }
+        this.processCurrentPhase();
+      }, 700);
+    }
+  }
+
+  showHumanBiddingModal() {
+    this.dom.biddingModal.style.display = 'flex';
+    this.dom.biddingOptions.innerHTML = '';
+
+    const validContracts = this.game.biddingEngine.getValidContracts();
+
+    validContracts.forEach(contract => {
+      const btn = document.createElement('button');
+      btn.className = contract.id === 'passe' ? 'btn-secondary' : 'btn-primary';
+      btn.innerText = contract.name;
+      btn.addEventListener('click', () => {
+        this.dom.biddingModal.style.display = 'none';
+        this.showSpeechBubble(0, contract.name);
+        this.audio.playBidChime();
+        this.game.processBid(contract);
+        this.processCurrentPhase();
+      });
+      this.dom.biddingOptions.appendChild(btn);
+    });
+  }
+
+  // --- CHIEN PHASE ---
+  processChienReveal() {
+    const taker = this.game.players[this.game.takerId];
+    this.showSpeechBubble(taker.id, `Reçoit le Chien !`);
+
+    if (taker.isHuman) {
+      setTimeout(() => {
+        this.game.takeChien();
+        this.processCurrentPhase();
+      }, 1000);
+    } else {
+      setTimeout(() => {
+        this.game.takeChien();
+        const fullHand = taker.hand;
+        const discard = TarotAI.chooseChienDiscard(fullHand);
+        this.game.confirmChienDiscard(discard);
+        this.showSpeechBubble(taker.id, `Écart réalisé !`);
+        this.processCurrentPhase();
+      }, 1200);
+    }
+  }
+
+  processChienDiscard() {
+    const taker = this.game.players[this.game.takerId];
+    if (taker.isHuman) {
+      this.dom.chienModal.style.display = 'flex';
+      this.renderChienModalContent();
+    }
+  }
+
+  renderChienModalContent() {
+    const taker = this.game.players[0];
+    this.dom.chienContainer.innerHTML = '';
+
+    const count = this.selectedChienCards.length;
+    this.dom.chienInstructions.innerText = `Sélectionnez 6 cartes à écarter (${count} / 6)`;
+
+    this.dom.confirmChienBtn.disabled = (count !== 6);
+
+    taker.hand.forEach(card => {
+      const isSelected = this.selectedChienCards.some(c => c.id === card.id);
+      const cardEl = CardRenderer.renderCard(card, {
+        isSelected,
+        onClick: (c) => {
+          if (isSelected) {
+            this.selectedChienCards = this.selectedChienCards.filter(x => x.id !== c.id);
+          } else {
+            if (this.selectedChienCards.length < 6) {
+              if (isValidChienDiscard(c, taker.hand, this.selectedChienCards)) {
+                this.selectedChienCards.push(c);
+              } else {
+                alert(`Impossible d'écarter cette carte ! (Interdiction d'écarter les Rois, les Bouts, ou les Atouts sauf si vous n'avez pas le choix).`);
+              }
+            }
+          }
+          this.renderChienModalContent();
+          this.renderHumanHand();
+        }
+      });
+      cardEl.style.margin = '4px';
+      this.dom.chienContainer.appendChild(cardEl);
+    });
+  }
+
+  onConfirmChienDiscard() {
+    if (this.selectedChienCards.length !== 6) return;
+    this.game.confirmChienDiscard(this.selectedChienCards);
+    this.selectedChienCards = [];
+    this.dom.chienModal.style.display = 'none';
+    this.audio.playCardSnap();
+    this.processCurrentPhase();
+  }
+
+  // --- TRICK PLAYING PHASE ---
+  processPlayingTurn() {
+    if (this.isProcessingAI) return;
+
+    const currentId = this.game.currentTurnPlayerId;
+    const player = this.game.players[currentId];
+
+    if (player.isHuman) {
+      // Human turn: ready for card click
+      return;
+    }
+
+    // AI Player Turn
+    this.isProcessingAI = true;
+    setTimeout(() => {
+      const legalMoves = getLegalMoves(player.hand, this.game.currentTrick);
+      const chosenCard = TarotAI.choosePlayCard({
+        playerId: player.id,
+        hand: player.hand,
+        legalMoves,
+        currentTrick: this.game.currentTrick,
+        takerId: this.game.takerId,
+        tricksHistory: this.game.tricksHistory
+      });
+
+      this.audio.playCardSnap();
+      const step = this.game.playCard(player.id, chosenCard);
+      this.isProcessingAI = false;
+
+      if (step.trickCompleted) {
+        this.handleTrickCompleted(step);
+      } else {
+        this.processCurrentPhase();
+      }
+    }, 600);
+  }
+
+  onHumanCardClick(card) {
+    if (this.game.phase !== GAME_PHASES.PLAYING) return;
+    if (this.game.currentTurnPlayerId !== 0) return;
+    if (this.isProcessingAI) return;
+
+    const human = this.game.players[0];
+    const legalMoves = getLegalMoves(human.hand, this.game.currentTrick);
+    
+    if (!legalMoves.some(c => c.id === card.id)) {
+      this.showSpeechBubble(0, "Carte non autorisée ! Vous devez fournir ou couper.");
+      return;
+    }
+
+    this.audio.playCardSnap();
+    const step = this.game.playCard(0, card);
+
+    if (step.trickCompleted) {
+      this.handleTrickCompleted(step);
+    } else {
+      this.processCurrentPhase();
+    }
+  }
+
+  handleTrickCompleted(step) {
+    this.updateTableUI();
+    this.audio.playTrickSweep();
+
+    const winnerName = this.game.players[step.winningPlay.playerId].name;
+    this.showSpeechBubble(step.winningPlay.playerId, `Pli gagné !`, 1200);
+
+    setTimeout(() => {
+      if (this.game.phase === GAME_PHASES.SCORING) {
+        this.showScoringModal();
+      } else {
+        this.processCurrentPhase();
+      }
+    }, 1300);
+  }
+
+  showScoringModal() {
+    const res = this.game.roundResult;
+    if (!res) return;
+
+    this.audio.playFanfare();
+    this.dom.scoringModal.style.display = 'flex';
+
+    const takerName = this.game.players[res.takerId].name;
+
+    this.dom.scoringDetails.innerHTML = `
+      <div style="font-size: 1.2rem; margin-bottom: 12px; color: ${res.isWon ? '#27ae60' : '#c0392b'}; font-weight: 800;">
+        ${takerName} a ${res.isWon ? 'GAGNÉ' : 'PERDU'} son contrat ${res.contract.name} !
+      </div>
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+        <tr><td style="padding: 6px; font-weight: bold;">Points faits par le preneur:</td><td>${res.preneurPoints} pts</td></tr>
+        <tr><td style="padding: 6px; font-weight: bold;">Points nécessaires (${res.preneurBouts} Bout${res.preneurBouts > 1 ? 's' : ''}):</td><td>${res.pointTarget} pts</td></tr>
+        <tr><td style="padding: 6px; font-weight: bold;">Écart / Différence:</td><td>${res.diff >= 0 ? '+' : ''}${res.diff} pts</td></tr>
+        ${res.petitAuBoutPoints !== 0 ? `<tr><td style="padding: 6px; font-weight: bold;">Petit au bout:</td><td>${res.petitAuBoutPoints > 0 ? '+10' : '-10'} pts</td></tr>` : ''}
+      </table>
+      <div style="font-weight: 900; font-size: 1.1rem; margin-bottom: 10px;">Scores de la manche :</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-weight: bold;">
+        ${this.game.players.map(p => `
+          <div style="background: #eee; padding: 6px 10px; border-radius: 8px; display: flex; justify-content: space-between;">
+            <span>${p.name}:</span>
+            <span style="color: ${res.playerScores[p.id] >= 0 ? '#27ae60' : '#c0392b'}">${res.playerScores[p.id] >= 0 ? '+' : ''}${res.playerScores[p.id]}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+}
+
+// --- src/app.js ---
+document.addEventListener('DOMContentLoaded', () => {
+  const audioManager = new AudioManager();
+  const uiController = new UIController(audioManager);
+
+  // Resume Web Audio Context on first click anywhere
+  const enableAudio = () => {
+    audioManager.init();
+    window.removeEventListener('click', enableAudio);
+    window.removeEventListener('keydown', enableAudio);
+  };
+
+  window.addEventListener('click', enableAudio);
+  window.addEventListener('keydown', enableAudio);
+
+  uiController.init();
+});
+
+  </script>
+</body>
+</html>

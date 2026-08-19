@@ -1,0 +1,163 @@
+/* Global Styles & Sunburst Theme - Le tarot de Mamie Nicole */
+:root {
+  --lime-green-bg: #89c53f;
+  --lime-green-light: #a4dc55;
+  --cream-bg: #fdfbf2;
+  --felt-green: #1c6b37;
+  --felt-green-dark: #124d26;
+  --gold-accent: #f5cf47;
+  --text-dark: #222222;
+  --font-family: 'Fredoka', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: var(--font-family);
+  background-color: var(--lime-green-bg);
+}
+
+/* Dynamic Sunburst Rays Background */
+.sunburst-bg {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 300vmax;
+  height: 300vmax;
+  transform: translate(-50%, -50%);
+  background: repeating-conic-gradient(
+    from 0deg,
+    var(--lime-green-bg) 0deg 15deg,
+    var(--lime-green-light) 15deg 30deg
+  );
+  z-index: 0;
+  animation: rotateSunburst 200s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotateSunburst {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Main App Container: Fixed Grid / Flex Layout that never overflows */
+#app {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px 0 12px;
+  overflow: hidden;
+}
+
+/* Header */
+header {
+  width: 100%;
+  max-width: 1100px;
+  height: 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.game-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow:
+    3px 3px 0px #000,
+    -2px -2px 0px #000,
+    2px -2px 0px #000,
+    -2px 2px 0px #000,
+    0px 4px 8px rgba(0,0,0,0.4);
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3));
+}
+
+.header-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-icon {
+  background: #ffffff;
+  border: 3px solid #222;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #222;
+  transition: transform 0.1s, box-shadow 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #222;
+}
+
+/* Standard Buttons */
+.btn-primary {
+  background: linear-gradient(180deg, #ffdf58 0%, #f39c12 100%);
+  border: 3px solid #000;
+  border-radius: 12px;
+  padding: 8px 20px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #000;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #000;
+  transition: transform 0.1s, box-shadow 0.1s;
+  text-transform: uppercase;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+.btn-primary:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #000;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: linear-gradient(180deg, #ffffff 0%, #dcdde1 100%);
+  border: 3px solid #000;
+  border-radius: 12px;
+  padding: 8px 18px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #000;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #000;
+}
