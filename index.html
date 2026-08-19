@@ -2139,7 +2139,7 @@ class UIController {
     this.processCurrentPhase();
   }
 
-  updateTableUI() {
+  updatePlayerSlots() {
     // 1. Update Player Slots & Total Scores
     this.game.players.forEach(p => {
       const slot = this.dom.playerSlots[p.id];
@@ -2173,7 +2173,7 @@ class UIController {
       if (this.game.phase === GAME_PHASES.PLAYING) {
         this.dom.centerInfo.innerHTML = `
           <span>Contrat: <strong>${this.game.contract.name}</strong></span>
-          <span>Pli: <strong>${this.game.trickCount + 1} / 18</strong></span>
+          <span>Pli: <strong>${this.game.trickCount} / 18</strong></span>
         `;
       } else if (this.game.phase === GAME_PHASES.BIDDING) {
         this.dom.centerInfo.innerHTML = `<span>Phase: <strong>Annonces</strong></span>`;
@@ -2181,11 +2181,16 @@ class UIController {
         this.dom.centerInfo.innerHTML = `<span>Phase: <strong>${this.game.phase}</strong></span>`;
       }
     }
+  }
 
-    // 3. Render Human Hand (ALWAYS visible so player can examine cards)
+  updateTableUI() {
+    // Delegate player slot / score / center info update
+    this.updatePlayerSlots();
+
+    // Render Human Hand (ALWAYS visible so player can examine cards)
     this.renderHumanHand();
 
-    // 4. Render Center Trick Cards
+    // Render Center Trick Cards (live currentTrick)
     this.renderTrickCards();
   }
 
@@ -2230,10 +2235,12 @@ class UIController {
     this.dom.humanHand.appendChild(handWrapper);
   }
 
-  renderTrickCards() {
+  renderTrickCards(plays) {
     this.dom.trickArea.innerHTML = '';
+    // Use provided plays array if given (e.g. completed trick snapshot), otherwise live trick
+    const trick = plays || this.game.currentTrick;
 
-    this.game.currentTrick.forEach(play => {
+    trick.forEach(play => {
       const player = this.game.players[play.playerId];
       const cardEl = CardRenderer.renderCard(play.card);
       
@@ -2463,19 +2470,35 @@ class UIController {
   }
 
   handleTrickCompleted(step) {
-    this.updateTableUI();
-    this.audio.playTrickSweep();
+    // Step 1: The game engine has already moved cards to wonCards and cleared currentTrick.
+    // Retrieve the completed trick snapshot from tricksHistory (the just-finished trick).
+    const completedTrick = this.game.tricksHistory[this.game.tricksHistory.length - 1];
+    const trickPlays = completedTrick ? completedTrick.trick : [];
 
-    const winnerName = this.game.players[step.winningPlay.playerId].name;
-    this.showSpeechBubble(step.winningPlay.playerId, `Pli gagné !`, 1200);
+    // Step 2: Show all 4 cards on the table so the player can see them.
+    // updateTableUI() would use the now-empty currentTrick, so we update everything EXCEPT the trick area,
+    // then manually render the completed trick snapshot.
+    this.updatePlayerSlots();
+    this.renderHumanHand();
+    this.renderTrickCards(trickPlays); // Display all 4 completed trick cards
 
+    // Step 3: After a clear pause (1600ms), sweep the cards away and announce winner.
     setTimeout(() => {
-      if (this.game.phase === GAME_PHASES.SCORING) {
-        this.showScoringModal();
-      } else {
-        this.processCurrentPhase();
-      }
-    }, 1300);
+      this.audio.playTrickSweep();
+      this.showSpeechBubble(step.winningPlay.playerId, `Pli gagné !`, 1400);
+
+      // Clear the trick area visually (sweep animation)
+      this.dom.trickArea.innerHTML = '';
+      this.updateTableUI(); // Now refresh normally (currentTrick is empty)
+
+      setTimeout(() => {
+        if (this.game.phase === GAME_PHASES.SCORING) {
+          this.showScoringModal();
+        } else {
+          this.processCurrentPhase();
+        }
+      }, 1000);
+    }, 1600);
   }
 
   showScoringModal() {
