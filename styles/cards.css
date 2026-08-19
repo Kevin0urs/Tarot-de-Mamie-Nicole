@@ -37,6 +37,33 @@
   border-color: #f39c12;
 }
 
+/* Selected card styling (used in discard modal) */
+.tarot-card.selected {
+  border: 3.5px solid #27ae60 !important;
+  box-shadow: 0 0 12px 4px rgba(39, 174, 96, 0.8) !important;
+  transform: scale(1.05);
+}
+
+.tarot-card.selected::before {
+  content: '✓ Écartée';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-12deg);
+  background: rgba(39, 174, 96, 0.95);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 900;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  z-index: 20;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  pointer-events: none;
+  border: 1px solid white;
+}
+
 /* Suit Colors */
 .tarot-card[data-suit="spade"],
 .tarot-card[data-suit="club"] {
