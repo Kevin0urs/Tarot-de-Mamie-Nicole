@@ -1,8 +1,8 @@
 /* Card Component Styles - Le tarot de Mamie Nicole */
 
 .tarot-card {
-  width: 70px;
-  height: 118px;
+  width: 92px;
+  height: 155px;
   background: #ffffff;
   border: 2px solid #2c3e50;
   border-radius: 7px;
@@ -52,9 +52,9 @@
   transform: translate(-50%, -50%) rotate(-12deg);
   background: rgba(39, 174, 96, 0.95);
   color: white;
-  font-size: 0.65rem;
+  font-size: 0.8rem;
   font-weight: 900;
-  padding: 4px 8px;
+  padding: 6px 12px;
   border-radius: 4px;
   text-transform: uppercase;
   z-index: 20;
@@ -86,7 +86,7 @@
 .tarot-card[data-suit="trump"] .trump-header-banner {
   background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
   color: #ffffff;
-  font-size: 0.62rem;
+  font-size: 0.85rem;
   font-weight: 900;
   text-align: center;
   padding: 1px 0;
@@ -108,7 +108,7 @@
 .tarot-card[data-suit="excuse"] .excuse-header-banner {
   background: #facc15;
   color: #000000;
-  font-size: 0.62rem;
+  font-size: 0.85rem;
   font-weight: 900;
   text-align: center;
   padding: 1px 0;
@@ -124,7 +124,7 @@
   align-items: center;
   line-height: 1;
   font-weight: 900;
-  font-size: 0.85rem;
+  font-size: 1.4rem;
 }
 
 .card-corner.top-left {
@@ -137,7 +137,7 @@
 }
 
 .suit-symbol {
-  font-size: 0.8rem;
+  font-size: 1.3rem;
   margin-top: 1px;
 }
 
@@ -152,7 +152,7 @@
 }
 
 .trump-number {
-  font-size: 1.5rem;
+  font-size: 2.2rem;
   font-weight: 900;
   color: #78350f;
   font-family: 'Times New Roman', serif;
@@ -172,9 +172,9 @@
 .bout-badge {
   background: #ef4444;
   color: #ffffff;
-  font-size: 0.55rem;
+  font-size: 0.75rem;
   font-weight: 900;
-  padding: 1px 3px;
+  padding: 2px 6px;
   border-radius: 3px;
   text-transform: uppercase;
   margin-top: 2px;
@@ -182,10 +182,10 @@
 }
 
 .court-art {
-  font-size: 1.5rem;
+  font-size: 2.4rem;
   opacity: 0.95;
 }
 
 .suit-pip-center {
-  font-size: 1.4rem;
+  font-size: 2.4rem;
 }

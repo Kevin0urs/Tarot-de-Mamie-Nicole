@@ -13,14 +13,14 @@ export class GameStateMachine {
       wonCards: []
     }));
     this.totalScores = { 0: 0, 1: 0, 2: 0, 3: 0 };
-    this.dealerId = 3; // Initial dealer (Player 0 will start bidding on 1st round)
+    this.dealerId = 2; // Initial dealer (Player 0 will start bidding on 1st round in CCW order)
     this.resetRound();
   }
 
   resetRound() {
     this.phase = GAME_PHASES.DEALING;
-    this.dealerId = (this.dealerId + 1) % 4;
-    this.firstBidderId = (this.dealerId + 1) % 4;
+    this.dealerId = (this.dealerId - 1 + 4) % 4;
+    this.firstBidderId = (this.dealerId - 1 + 4) % 4;
     this.currentTurnPlayerId = this.firstBidderId;
     
     this.players.forEach(p => {
@@ -217,7 +217,7 @@ export class GameStateMachine {
       }
     } else {
       // Next player in trick
-      this.currentTurnPlayerId = (this.currentTurnPlayerId + 1) % 4;
+      this.currentTurnPlayerId = (this.currentTurnPlayerId - 1 + 4) % 4;
     }
 
     return {

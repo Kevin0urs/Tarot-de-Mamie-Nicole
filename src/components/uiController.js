@@ -139,9 +139,9 @@ export class UIController {
     const count = human.hand.length;
     if (count === 0) return;
 
-    // Compact hand calculation: max width around 580px for 18 cards
-    const containerWidth = Math.min(640, Math.max(320, (window.innerWidth || 800) - 100));
-    const cardOffset = count > 1 ? Math.min(28, Math.max(16, (containerWidth - 70) / (count - 1))) : 0;
+    // Compact hand calculation: max width around 700px for 18 cards
+    const containerWidth = Math.min(760, Math.max(360, (window.innerWidth || 800) - 80));
+    const cardOffset = count > 1 ? Math.min(36, Math.max(20, (containerWidth - 92) / (count - 1))) : 0;
     const startX = -(count - 1) * cardOffset / 2;
 
     const isPlayingTurn = (this.game.phase === GAME_PHASES.PLAYING && this.game.currentTurnPlayerId === 0);

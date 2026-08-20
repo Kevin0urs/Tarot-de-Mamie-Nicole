@@ -88,8 +88,8 @@ export function dealCards(deck, dealerId = 0) {
   const hands = [[], [], [], []];
   const chien = [];
   
-  // Deal order starts after the dealer: (dealerId + 1) % 4
-  const startPlayer = (dealerId + 1) % 4;
+  // Deal order starts after the dealer: (dealerId - 1 + 4) % 4
+  const startPlayer = (dealerId - 1 + 4) % 4;
 
   let deckIndex = 0;
   let cardsDealtToPlayers = 0;
@@ -116,7 +116,7 @@ export function dealCards(deck, dealerId = 0) {
       hands[currentPlayer].push(deck[i]);
       cardsDealtToPlayers++;
       if (cardsDealtToPlayers % 3 === 0) {
-        currentPlayer = (currentPlayer + 1) % 4;
+        currentPlayer = (currentPlayer - 1 + 4) % 4;
       }
     }
   }

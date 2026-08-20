@@ -58,7 +58,7 @@ export class BiddingEngine {
 
     // Move to next player
     if (this.bids.length < 4) {
-      this.currentPlayerId = (this.currentPlayerId + 1) % 4;
+      this.currentPlayerId = (this.currentPlayerId - 1 + 4) % 4;
     } else {
       this.isComplete = true;
     }

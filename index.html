@@ -213,8 +213,8 @@ header {
 /* Center Trick Area */
 .trick-area {
   position: relative;
-  width: 260px;
-  height: 170px;
+  width: 300px;
+  height: 190px;
   border-radius: 20px;
   background: rgba(0, 0, 0, 0.22);
   border: 2px dashed rgba(255, 255, 255, 0.3);
@@ -228,10 +228,10 @@ header {
   transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.trick-card-slot[data-position="south"] { transform: translateY(26px); }
-.trick-card-slot[data-position="north"] { transform: translateY(-26px); }
-.trick-card-slot[data-position="west"] { transform: translateX(-44px); }
-.trick-card-slot[data-position="east"] { transform: translateX(44px); }
+.trick-card-slot[data-position="south"] { transform: translateY(32px); }
+.trick-card-slot[data-position="north"] { transform: translateY(-32px); }
+.trick-card-slot[data-position="west"] { transform: translateX(-52px); }
+.trick-card-slot[data-position="east"] { transform: translateX(52px); }
 
 /* Center Game Info (Contract & Trick number) */
 .center-info {
@@ -352,7 +352,7 @@ header {
 .human-hand-container {
   width: 100%;
   max-width: 960px;
-  height: 142px;
+  height: 180px;
   position: relative;
   display: flex;
   justify-content: center;
@@ -367,7 +367,7 @@ header {
   display: flex;
   justify-content: center;
   width: 100%;
-  height: 130px;
+  height: 165px;
 }
 
 .hand-card-item {
@@ -448,8 +448,8 @@ header {
 /* Card Component Styles - Le tarot de Mamie Nicole */
 
 .tarot-card {
-  width: 70px;
-  height: 118px;
+  width: 92px;
+  height: 155px;
   background: #ffffff;
   border: 2px solid #2c3e50;
   border-radius: 7px;
@@ -499,9 +499,9 @@ header {
   transform: translate(-50%, -50%) rotate(-12deg);
   background: rgba(39, 174, 96, 0.95);
   color: white;
-  font-size: 0.65rem;
+  font-size: 0.8rem;
   font-weight: 900;
-  padding: 4px 8px;
+  padding: 6px 12px;
   border-radius: 4px;
   text-transform: uppercase;
   z-index: 20;
@@ -533,7 +533,7 @@ header {
 .tarot-card[data-suit="trump"] .trump-header-banner {
   background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
   color: #ffffff;
-  font-size: 0.62rem;
+  font-size: 0.85rem;
   font-weight: 900;
   text-align: center;
   padding: 1px 0;
@@ -555,7 +555,7 @@ header {
 .tarot-card[data-suit="excuse"] .excuse-header-banner {
   background: #facc15;
   color: #000000;
-  font-size: 0.62rem;
+  font-size: 0.85rem;
   font-weight: 900;
   text-align: center;
   padding: 1px 0;
@@ -571,7 +571,7 @@ header {
   align-items: center;
   line-height: 1;
   font-weight: 900;
-  font-size: 0.85rem;
+  font-size: 1.4rem;
 }
 
 .card-corner.top-left {
@@ -584,7 +584,7 @@ header {
 }
 
 .suit-symbol {
-  font-size: 0.8rem;
+  font-size: 1.3rem;
   margin-top: 1px;
 }
 
@@ -599,7 +599,7 @@ header {
 }
 
 .trump-number {
-  font-size: 1.5rem;
+  font-size: 2.2rem;
   font-weight: 900;
   color: #78350f;
   font-family: 'Times New Roman', serif;
@@ -619,9 +619,9 @@ header {
 .bout-badge {
   background: #ef4444;
   color: #ffffff;
-  font-size: 0.55rem;
+  font-size: 0.75rem;
   font-weight: 900;
-  padding: 1px 3px;
+  padding: 2px 6px;
   border-radius: 3px;
   text-transform: uppercase;
   margin-top: 2px;
@@ -629,12 +629,12 @@ header {
 }
 
 .court-art {
-  font-size: 1.5rem;
+  font-size: 2.4rem;
   opacity: 0.95;
 }
 
 .suit-pip-center {
-  font-size: 1.4rem;
+  font-size: 2.4rem;
 }
 
   </style>
@@ -894,8 +894,8 @@ function dealCards(deck, dealerId = 0) {
   const hands = [[], [], [], []];
   const chien = [];
   
-  // Deal order starts after the dealer: (dealerId + 1) % 4
-  const startPlayer = (dealerId + 1) % 4;
+  // Deal order starts after the dealer: (dealerId - 1 + 4) % 4
+  const startPlayer = (dealerId - 1 + 4) % 4;
 
   let deckIndex = 0;
   let cardsDealtToPlayers = 0;
@@ -922,7 +922,7 @@ function dealCards(deck, dealerId = 0) {
       hands[currentPlayer].push(deck[i]);
       cardsDealtToPlayers++;
       if (cardsDealtToPlayers % 3 === 0) {
-        currentPlayer = (currentPlayer + 1) % 4;
+        currentPlayer = (currentPlayer - 1 + 4) % 4;
       }
     }
   }
@@ -1293,7 +1293,7 @@ class BiddingEngine {
 
     // Move to next player
     if (this.bids.length < 4) {
-      this.currentPlayerId = (this.currentPlayerId + 1) % 4;
+      this.currentPlayerId = (this.currentPlayerId - 1 + 4) % 4;
     } else {
       this.isComplete = true;
     }
@@ -1586,14 +1586,14 @@ class GameStateMachine {
       wonCards: []
     }));
     this.totalScores = { 0: 0, 1: 0, 2: 0, 3: 0 };
-    this.dealerId = 3; // Initial dealer (Player 0 will start bidding on 1st round)
+    this.dealerId = 2; // Initial dealer (Player 0 will start bidding on 1st round in CCW order)
     this.resetRound();
   }
 
   resetRound() {
     this.phase = GAME_PHASES.DEALING;
-    this.dealerId = (this.dealerId + 1) % 4;
-    this.firstBidderId = (this.dealerId + 1) % 4;
+    this.dealerId = (this.dealerId - 1 + 4) % 4;
+    this.firstBidderId = (this.dealerId - 1 + 4) % 4;
     this.currentTurnPlayerId = this.firstBidderId;
     
     this.players.forEach(p => {
@@ -1790,7 +1790,7 @@ class GameStateMachine {
       }
     } else {
       // Next player in trick
-      this.currentTurnPlayerId = (this.currentTurnPlayerId + 1) % 4;
+      this.currentTurnPlayerId = (this.currentTurnPlayerId - 1 + 4) % 4;
     }
 
     return {
@@ -2204,9 +2204,9 @@ class UIController {
     const count = human.hand.length;
     if (count === 0) return;
 
-    // Compact hand calculation: max width around 580px for 18 cards
-    const containerWidth = Math.min(640, Math.max(320, (window.innerWidth || 800) - 100));
-    const cardOffset = count > 1 ? Math.min(28, Math.max(16, (containerWidth - 70) / (count - 1))) : 0;
+    // Compact hand calculation: max width around 700px for 18 cards
+    const containerWidth = Math.min(760, Math.max(360, (window.innerWidth || 800) - 80));
+    const cardOffset = count > 1 ? Math.min(36, Math.max(20, (containerWidth - 92) / (count - 1))) : 0;
     const startX = -(count - 1) * cardOffset / 2;
 
     const isPlayingTurn = (this.game.phase === GAME_PHASES.PLAYING && this.game.currentTurnPlayerId === 0);
