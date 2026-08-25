@@ -14,7 +14,20 @@ export class UIController {
 
   init() {
     this.bindDOM();
+    this.setupPlayerNames();
     this.startNewHand();
+  }
+
+  setupPlayerNames() {
+    this.game.players.forEach(p => {
+      const slot = this.dom.playerSlots[p.id];
+      if (slot) {
+        const nameTag = slot.querySelector('.player-name-tag');
+        if (nameTag) {
+          nameTag.innerText = p.name;
+        }
+      }
+    });
   }
 
   bindDOM() {
@@ -133,41 +146,56 @@ export class UIController {
     const human = this.game.players[0];
     this.dom.humanHand.innerHTML = '';
 
-    const handWrapper = document.createElement('div');
-    handWrapper.className = 'hand-cards-wrapper';
-
     const count = human.hand.length;
     if (count === 0) return;
-
-    // Compact hand calculation: max width around 600px for 18 cards, keeping distance from edges
-    const containerWidth = Math.min(680, Math.max(320, (window.innerWidth || 800) - 160));
-    const cardOffset = count > 1 ? Math.min(30, Math.max(18, (containerWidth - 92) / (count - 1))) : 0;
-    const startX = -(count - 1) * cardOffset / 2;
 
     const isPlayingTurn = (this.game.phase === GAME_PHASES.PLAYING && this.game.currentTurnPlayerId === 0);
     const legalMoves = isPlayingTurn ? getLegalMoves(human.hand, this.game.currentTrick) : [];
 
-    human.hand.forEach((card, index) => {
-      // During trick play, highlight legal cards; during bidding/discard, all hand cards are enabled
-      const isPlayable = isPlayingTurn ? legalMoves.some(c => c.id === card.id) : false;
-      const isSelected = this.selectedChienCards.some(c => c.id === card.id);
+    // Split hand in half
+    const half = Math.ceil(count / 2);
+    const topCards = human.hand.slice(0, half);
+    const bottomCards = human.hand.slice(half);
 
-      const cardEl = CardRenderer.renderCard(card, {
-        isPlayable,
-        isSelected,
-        onClick: (c) => this.onHumanCardClick(c)
+    const renderRow = (cards, rowClass, isBottomRow) => {
+      const rowWrapper = document.createElement('div');
+      rowWrapper.className = `hand-cards-row ${rowClass}`;
+      
+      const k = cards.length;
+      if (k === 0) return rowWrapper;
+
+      // 8vw width per card. Overlap 20% means card offset is 6.4vw.
+      // Total width of row of k cards = (k - 1) * 6.4vw + 8vw.
+      const rowWidthVw = (k - 1) * 6.4 + 8;
+      rowWrapper.style.width = `${rowWidthVw}vw`;
+
+      cards.forEach((card, index) => {
+        const isPlayable = isPlayingTurn ? legalMoves.some(c => c.id === card.id) : false;
+        const isSelected = this.selectedChienCards.some(c => c.id === card.id);
+
+        const cardEl = CardRenderer.renderCard(card, {
+          isPlayable,
+          isSelected,
+          onClick: (c) => this.onHumanCardClick(c)
+        });
+
+        cardEl.className += ' hand-card-item';
+        cardEl.style.position = 'absolute';
+        cardEl.style.left = `${index * 6.4}vw`;
+        cardEl.style.top = '0';
+        cardEl.style.zIndex = index + 1;
+
+        rowWrapper.appendChild(cardEl);
       });
 
-      cardEl.className += ' hand-card-item';
-      
-      const posX = Math.round(startX + index * cardOffset);
-      cardEl.style.setProperty('--card-x', `${posX}px`);
-      cardEl.style.zIndex = index + 1;
+      return rowWrapper;
+    };
 
-      handWrapper.appendChild(cardEl);
-    });
+    const topRowEl = renderRow(topCards, 'top-row', false);
+    const bottomRowEl = renderRow(bottomCards, 'bottom-row', true);
 
-    this.dom.humanHand.appendChild(handWrapper);
+    this.dom.humanHand.appendChild(topRowEl);
+    this.dom.humanHand.appendChild(bottomRowEl);
   }
 
   renderTrickCards(plays) {

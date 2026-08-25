@@ -1,17 +1,20 @@
 /* Card Component Styles - Le tarot de Mamie Nicole */
 
 .tarot-card {
-  width: 92px;
-  height: 155px;
+  width: 8vw;
+  height: 12vw;
+  min-width: 70px;
+  min-height: 105px;
   background: #ffffff;
-  border: 2px solid #2c3e50;
-  border-radius: 7px;
+  border: 0.12vw solid #000000;
+  border-radius: 0.6vw;
   box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.3);
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 3px;
+  padding: 0.3vw;
+  box-sizing: border-box;
   background-size: cover;
   transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, filter 0.15s;
   transform-origin: bottom center;
@@ -33,122 +36,137 @@
 
 /* Playable highlight glow */
 .tarot-card.playable {
-  box-shadow: 0 0 10px 3px #f1c40f, 0 3px 6px rgba(0,0,0,0.3);
+  box-shadow: 0 0 10px 4px #f1c40f, 0 3px 6px rgba(0,0,0,0.3);
   border-color: #f39c12;
 }
 
 /* Selected card styling (used in discard modal) */
 .tarot-card.selected {
-  border: 3.5px solid #27ae60 !important;
+  border: 3px solid #27ae60 !important;
   box-shadow: 0 0 12px 4px rgba(39, 174, 96, 0.8) !important;
   transform: scale(1.05);
 }
 
 .tarot-card.selected::before {
-  content: '✓ Écartée';
+  content: '✓';
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) rotate(-12deg);
+  transform: translate(-50%, -50%);
   background: rgba(39, 174, 96, 0.95);
   color: white;
-  font-size: 0.8rem;
+  font-size: 1.5rem;
   font-weight: 900;
-  padding: 6px 12px;
-  border-radius: 4px;
-  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 50%;
   z-index: 20;
-  white-space: nowrap;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
   pointer-events: none;
-  border: 1px solid white;
+  border: 1.5px solid white;
 }
 
 /* Suit Colors */
 .tarot-card[data-suit="spade"],
 .tarot-card[data-suit="club"] {
-  color: #1a252f;
+  color: #000000;
 }
 
 .tarot-card[data-suit="heart"],
 .tarot-card[data-suit="diamond"] {
-  color: #c0392b;
+  color: #d32f2f;
 }
 
 /* ATOUT (TRUMP) DISTINCT VISUAL STYLING */
 .tarot-card[data-suit="trump"] {
-  color: #111111;
-  background: linear-gradient(180deg, #fff9e6 0%, #fef3c7 40%, #fde68a 100%);
-  border: 2.5px solid #d97706;
-  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.35);
-}
-
-.tarot-card[data-suit="trump"] .trump-header-banner {
-  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
-  color: #ffffff;
-  font-size: 0.85rem;
-  font-weight: 900;
-  text-align: center;
-  padding: 1px 0;
-  border-radius: 3px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 1px;
-  text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+  color: #000000;
+  background: #ffffff;
 }
 
 /* EXCUSE DISTINCT VISUAL STYLING */
 .tarot-card[data-suit="excuse"] {
-  color: #ffffff;
-  background: linear-gradient(180deg, #9333ea 0%, #6b21a8 100%);
-  border: 2.5px solid #a855f7;
-  box-shadow: 0 2px 10px rgba(147, 51, 234, 0.4);
-}
-
-.tarot-card[data-suit="excuse"] .excuse-header-banner {
-  background: #facc15;
   color: #000000;
-  font-size: 0.85rem;
-  font-weight: 900;
-  text-align: center;
-  padding: 1px 0;
-  border-radius: 3px;
-  text-transform: uppercase;
-  margin-bottom: 1px;
+  background: #ffffff;
 }
 
 /* Card Corner Ranks & Symbols */
 .card-corner {
+  position: absolute;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  line-height: 1;
+  gap: 0.1vw;
+  font-family: 'Times New Roman', Times, Baskerville, Georgia, serif;
   font-weight: 900;
-  font-size: 1.4rem;
+  line-height: 1;
+  font-size: 1.8vw;
+  height: 2vw;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.1vw 0.3vw;
+  border-radius: 0.3vw;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  z-index: 5;
+  pointer-events: none;
 }
 
 .card-corner.top-left {
-  align-self: flex-start;
+  top: 0.4vw;
+  left: 0.4vw;
 }
 
 .card-corner.bottom-right {
-  align-self: flex-end;
+  bottom: 0.4vw;
+  right: 0.4vw;
   transform: rotate(180deg);
 }
 
 .suit-symbol {
-  font-size: 1.3rem;
-  margin-top: 1px;
+  font-size: 1.6vw;
+}
+
+.rank-num {
+  font-size: 1.8vw;
 }
 
 /* Center Card Art/Content */
 .card-center {
-  flex: 1;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.card-illustration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.5vw;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.card-center-fallback {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  background: #ffffff;
+  border-radius: 0.5vw;
+  pointer-events: none;
 }
 
 .trump-number {
@@ -188,4 +206,23 @@
 
 .suit-pip-center {
   font-size: 2.4rem;
+}
+
+/* Card Pips Grid (for 2 to 10 numbered cards) */
+.card-pips-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  width: 80%;
+  height: 75%;
+  margin: auto;
+  pointer-events: none;
+}
+
+.card-pips-grid .pip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4vh;
+  line-height: 1;
 }

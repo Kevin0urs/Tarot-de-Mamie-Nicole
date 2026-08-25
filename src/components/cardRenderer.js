@@ -1,5 +1,59 @@
 import { SUITS } from '../engine/types.js';
 
+const TAROT_IMAGE_URLS = {
+  "trump_1": "https://upload.wikimedia.org/wikipedia/commons/5/52/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_01.jpg",
+  "trump_2": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_02.jpg",
+  "trump_3": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_03.jpg",
+  "trump_4": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_04.jpg",
+  "trump_5": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_05.jpg",
+  "trump_6": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_06.jpg",
+  "trump_7": "https://upload.wikimedia.org/wikipedia/commons/9/91/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_07.jpg",
+  "trump_8": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_08.jpg",
+  "trump_9": "https://upload.wikimedia.org/wikipedia/commons/0/03/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_09.jpg",
+  "trump_10": "https://upload.wikimedia.org/wikipedia/commons/2/23/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_10.jpg",
+  "trump_11": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_11.jpg",
+  "trump_12": "https://upload.wikimedia.org/wikipedia/commons/0/04/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_12.jpg",
+  "trump_13": "https://upload.wikimedia.org/wikipedia/commons/3/31/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_13.jpg",
+  "trump_14": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_14.jpg",
+  "trump_15": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_15.jpg",
+  "trump_16": "https://upload.wikimedia.org/wikipedia/commons/8/87/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_16.jpg",
+  "trump_17": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_17.jpg",
+  "trump_18": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_18.jpg",
+  "trump_19": "https://upload.wikimedia.org/wikipedia/commons/6/66/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_19.jpg",
+  "trump_20": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_20.jpg",
+  "trump_21": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_21.jpg",
+  "excuse": "https://upload.wikimedia.org/wikipedia/commons/3/37/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_Excuse.jpg",
+  "spade_11": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Tarot_nouveau_-_Grimaud_-_1898_-_Spades_-_Jack.jpg",
+  "spade_12": "https://upload.wikimedia.org/wikipedia/commons/9/91/Tarot_nouveau_-_Grimaud_-_1898_-_Spades_-_Knight.jpg",
+  "spade_13": "https://upload.wikimedia.org/wikipedia/commons/8/88/Tarot_nouveau_-_Grimaud_-_1898_-_Spades_-_Queen.jpg",
+  "spade_14": "https://upload.wikimedia.org/wikipedia/commons/2/24/Tarot_nouveau_-_Grimaud_-_1898_-_Spades_-_King.jpg",
+  "heart_11": "https://upload.wikimedia.org/wikipedia/commons/4/41/Tarot_nouveau_-_Grimaud_-_1898_-_Hearts_-_Jack.jpg",
+  "heart_12": "https://upload.wikimedia.org/wikipedia/commons/8/81/Tarot_nouveau_-_Grimaud_-_1898_-_Hearts_-_Knight.jpg",
+  "heart_13": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Tarot_nouveau_-_Grimaud_-_1898_-_Hearts_-_Queen.jpg",
+  "heart_14": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Tarot_nouveau_-_Grimaud_-_1898_-_Hearts_-_King.jpg",
+  "diamond_11": "https://upload.wikimedia.org/wikipedia/commons/c/c7/Tarot_nouveau_-_Grimaud_-_1898_-_Diamonds_-_Jack.jpg",
+  "diamond_12": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Tarot_nouveau_-_Grimaud_-_1898_-_Diamonds_-_Knight.jpg",
+  "diamond_13": "https://upload.wikimedia.org/wikipedia/commons/7/77/Tarot_nouveau_-_Grimaud_-_1898_-_Diamonds_-_Queen.jpg",
+  "diamond_14": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Tarot_nouveau_-_Grimaud_-_1898_-_Diamonds_-_King.jpg",
+  "club_11": "https://upload.wikimedia.org/wikipedia/commons/d/d2/Tarot_nouveau_-_Grimaud_-_1898_-_Clubs_-_Jack.jpg",
+  "club_12": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Tarot_nouveau_-_Grimaud_-_1898_-_Clubs_-_Knight.jpg",
+  "club_13": "https://upload.wikimedia.org/wikipedia/commons/1/11/Tarot_nouveau_-_Grimaud_-_1898_-_Clubs_-_Queen.jpg",
+  "club_14": "https://upload.wikimedia.org/wikipedia/commons/5/52/Tarot_nouveau_-_Grimaud_-_1898_-_Clubs_-_King.jpg"
+};
+
+const PIP_GRID_POSITIONS = {
+  1: [[3, 2]],
+  2: [[1, 2], [5, 2]],
+  3: [[1, 2], [3, 2], [5, 2]],
+  4: [[1, 1], [1, 3], [5, 1], [5, 3]],
+  5: [[1, 1], [1, 3], [3, 2], [5, 1], [5, 3]],
+  6: [[1, 1], [1, 3], [3, 1], [3, 3], [5, 1], [5, 3]],
+  7: [[1, 1], [1, 3], [2, 2], [3, 1], [3, 3], [5, 1], [5, 3]],
+  8: [[1, 1], [1, 3], [2, 2], [3, 1], [3, 3], [4, 2], [5, 1], [5, 3]],
+  9: [[1, 1], [1, 3], [2, 1], [2, 3], [3, 2], [4, 1], [4, 3], [5, 1], [5, 3]],
+  10: [[1, 1], [1, 3], [2, 1], [2, 3], [2, 2], [4, 2], [4, 1], [4, 3], [5, 1], [5, 3]]
+};
+
 /**
  * Creates DOM card element for French Tarot cards.
  */
@@ -38,63 +92,73 @@ export class CardRenderer {
 
     const symbol = card.symbol || '★';
 
-    // 1. Top Banner for Trump / Excuse
-    if (card.suit === SUITS.TRUMP) {
-      const banner = document.createElement('div');
-      banner.className = 'trump-header-banner';
-      banner.innerText = card.value === 1 ? 'PETIT' : (card.value === 21 ? '21 ATOUT' : `ATOUT ${card.value}`);
-      cardEl.appendChild(banner);
-    } else if (card.suit === SUITS.EXCUSE) {
-      const banner = document.createElement('div');
-      banner.className = 'excuse-header-banner';
-      banner.innerText = 'EXCUSE';
-      cardEl.appendChild(banner);
+    // 1. Illustrated Cards (Atouts, Excuse, Figures)
+    const imageUrl = TAROT_IMAGE_URLS[card.id];
+    let fallbackNeeded = true;
+
+    if (imageUrl) {
+      fallbackNeeded = false;
+      const img = document.createElement('img');
+      img.className = 'card-illustration';
+      img.src = imageUrl;
+      
+      const fallbackCenter = document.createElement('div');
+      fallbackCenter.className = 'card-center-fallback';
+      fallbackCenter.style.display = 'none';
+      this.populateFallbackCenter(fallbackCenter, card, symbol);
+
+      img.onload = () => {
+        fallbackCenter.style.display = 'none';
+      };
+      img.onerror = () => {
+        img.style.display = 'none';
+        fallbackCenter.style.display = 'flex';
+      };
+
+      cardEl.appendChild(img);
+      cardEl.appendChild(fallbackCenter);
     }
 
-    // 2. Top Left Corner
+    // 2. Normal Center (Numbered Cards)
+    if (fallbackNeeded) {
+      const center = document.createElement('div');
+      center.className = 'card-center';
+
+      if (card.suit !== SUITS.TRUMP && card.suit !== SUITS.EXCUSE && card.value <= 10) {
+        // Render 1 to 10 pips grid
+        const pipsGrid = document.createElement('div');
+        pipsGrid.className = 'card-pips-grid';
+        const coords = PIP_GRID_POSITIONS[card.value] || [];
+        
+        coords.forEach(([row, col]) => {
+          const pip = document.createElement('div');
+          pip.className = 'pip';
+          pip.style.gridRow = row;
+          pip.style.gridColumn = col;
+          pip.innerText = symbol;
+          pipsGrid.appendChild(pip);
+        });
+        center.appendChild(pipsGrid);
+      } else {
+        this.populateFallbackCenter(center, card, symbol);
+      }
+      cardEl.appendChild(center);
+    }
+
+    // 3. Corners (Top-Left & Bottom-Right)
+    const rankSymbolHtml = card.suit !== SUITS.TRUMP && card.suit !== SUITS.EXCUSE
+      ? `<span class="rank-num">${rankText}</span><span class="rank-sym">${symbol}</span>`
+      : `<span class="rank-num">${rankText}</span>`;
+
     const topLeft = document.createElement('div');
     topLeft.className = 'card-corner top-left';
-    topLeft.innerHTML = `<div>${rankText}</div>${card.suit !== SUITS.TRUMP && card.suit !== SUITS.EXCUSE ? `<div class="suit-symbol">${symbol}</div>` : ''}`;
+    topLeft.innerHTML = rankSymbolHtml;
 
-    // 3. Center Content
-    const center = document.createElement('div');
-    center.className = 'card-center';
-
-    if (card.suit === SUITS.TRUMP) {
-      center.innerHTML = `
-        <div class="trump-frame">
-          <div class="trump-number">${card.value}</div>
-          ${card.isBout ? '<div class="bout-badge">BOUT</div>' : ''}
-        </div>
-      `;
-    } else if (card.suit === SUITS.EXCUSE) {
-      center.innerHTML = `
-        <div class="trump-frame" style="background: rgba(255,255,255,0.25); border-color: #facc15;">
-          <div class="court-art">🃏</div>
-          <div class="bout-badge">BOUT</div>
-        </div>
-      `;
-    } else {
-      // Court cards vs pip cards
-      if (card.value >= 11) {
-        let icon = '♟️';
-        if (card.value === 14) icon = '👑';
-        else if (card.value === 13) icon = '👸';
-        else if (card.value === 12) icon = '🐴';
-        else if (card.value === 11) icon = '🛡️';
-        center.innerHTML = `<div class="court-art">${icon}</div>`;
-      } else {
-        center.innerHTML = `<div class="suit-pip-center">${symbol}</div>`;
-      }
-    }
-
-    // 4. Bottom Right Corner
     const bottomRight = document.createElement('div');
     bottomRight.className = 'card-corner bottom-right';
-    bottomRight.innerHTML = `<div>${rankText}</div>${card.suit !== SUITS.TRUMP && card.suit !== SUITS.EXCUSE ? `<div class="suit-symbol">${symbol}</div>` : ''}`;
+    bottomRight.innerHTML = rankSymbolHtml;
 
     cardEl.appendChild(topLeft);
-    cardEl.appendChild(center);
     cardEl.appendChild(bottomRight);
 
     if (options.onClick) {
@@ -105,5 +169,34 @@ export class CardRenderer {
     }
 
     return cardEl;
+  }
+
+  static populateFallbackCenter(container, card, symbol) {
+    if (card.suit === SUITS.TRUMP) {
+      container.innerHTML = `
+        <div class="trump-frame">
+          <div class="trump-number">${card.value}</div>
+          ${card.isBout ? '<div class="bout-badge">BOUT</div>' : ''}
+        </div>
+      `;
+    } else if (card.suit === SUITS.EXCUSE) {
+      container.innerHTML = `
+        <div class="trump-frame" style="background: rgba(255,255,255,0.25); border-color: #facc15;">
+          <div class="court-art">🃏</div>
+          <div class="bout-badge">BOUT</div>
+        </div>
+      `;
+    } else {
+      if (card.value >= 11) {
+        let icon = '♟️';
+        if (card.value === 14) icon = '👑';
+        else if (card.value === 13) icon = '👸';
+        else if (card.value === 12) icon = '🐴';
+        else if (card.value === 11) icon = '🛡️';
+        container.innerHTML = `<div class="court-art">${icon}</div>`;
+      } else {
+        container.innerHTML = `<div class="suit-pip-center">${symbol}</div>`;
+      }
+    }
   }
 }

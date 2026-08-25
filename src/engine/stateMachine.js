@@ -5,10 +5,25 @@ import { getLegalMoves, getTrickWinner, isValidChienDiscard } from './rules.js';
 import { calculateRoundScores } from './scoring.js';
 import { TarotAI } from './ai.js';
 
+const CLASSIC_NAMES = [
+  "Nicole", "Jean", "Michel", "Philippe", "Alain", "Christian", "Patrick", 
+  "Bernard", "Gérard", "Jacques", "Monique", "Françoise", "Jacqueline", 
+  "Chantal", "Martine", "Brigitte", "Catherine", "Sylvie", "Patricia", 
+  "Daniel", "Kévin"
+];
+
+function getRandomAINames() {
+  const shuffled = [...CLASSIC_NAMES].sort(() => 0.5 - Math.random());
+  return [shuffled[0], shuffled[1], shuffled[2]];
+}
+
 export class GameStateMachine {
   constructor(players = DEFAULT_PLAYERS) {
+    const aiNames = getRandomAINames();
+    let aiIndex = 0;
     this.players = players.map(p => ({
       ...p,
+      name: p.isHuman ? p.name : aiNames[aiIndex++],
       hand: [],
       wonCards: []
     }));

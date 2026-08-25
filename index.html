@@ -351,42 +351,48 @@ header {
 /* Bottom Dock for Human Hand */
 .human-hand-container {
   width: 100%;
-  max-width: 960px;
-  height: 180px;
+  height: calc(12vw + 10vh + 1.5vw);
   position: relative;
   display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  padding-bottom: 6px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   flex-shrink: 0;
   z-index: 25;
 }
 
-.hand-cards-wrapper {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  height: 165px;
+.hand-cards-row {
+  position: absolute;
+  height: 12vw;
+  left: 50%;
+}
+
+.hand-cards-row.top-row {
+  top: 0;
+  transform: translateX(-50%);
+}
+
+.hand-cards-row.bottom-row {
+  top: 10vh;
+  transform: translateX(-50%) translateX(3.2vw); /* Shift right by half a card step */
 }
 
 .hand-card-item {
   position: absolute;
-  bottom: 0;
-  transform: translateX(var(--card-x, 0px)) translateY(0);
+  top: 0;
   transform-origin: bottom center;
   transition: transform 0.16s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.16s ease-out;
   cursor: pointer;
 }
 
 .hand-card-item:hover {
-  transform: translateX(var(--card-x, 0px)) translateY(-22px) scale(1.08) !important;
+  transform: translateY(-2vw) scale(1.05) !important;
   z-index: 300 !important;
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.5) !important;
 }
 
 .hand-card-item.selected {
-  transform: translateX(var(--card-x, 0px)) translateY(-28px) scale(1.1) !important;
+  transform: translateY(-2.5vw) scale(1.05) !important;
   z-index: 350 !important;
   box-shadow: 0 0 14px #f1c40f !important;
 }
@@ -448,17 +454,20 @@ header {
 /* Card Component Styles - Le tarot de Mamie Nicole */
 
 .tarot-card {
-  width: 92px;
-  height: 155px;
+  width: 8vw;
+  height: 12vw;
+  min-width: 70px;
+  min-height: 105px;
   background: #ffffff;
-  border: 2px solid #2c3e50;
-  border-radius: 7px;
+  border: 0.12vw solid #000000;
+  border-radius: 0.6vw;
   box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.3);
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 3px;
+  padding: 0.3vw;
+  box-sizing: border-box;
   background-size: cover;
   transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, filter 0.15s;
   transform-origin: bottom center;
@@ -480,122 +489,137 @@ header {
 
 /* Playable highlight glow */
 .tarot-card.playable {
-  box-shadow: 0 0 10px 3px #f1c40f, 0 3px 6px rgba(0,0,0,0.3);
+  box-shadow: 0 0 10px 4px #f1c40f, 0 3px 6px rgba(0,0,0,0.3);
   border-color: #f39c12;
 }
 
 /* Selected card styling (used in discard modal) */
 .tarot-card.selected {
-  border: 3.5px solid #27ae60 !important;
+  border: 3px solid #27ae60 !important;
   box-shadow: 0 0 12px 4px rgba(39, 174, 96, 0.8) !important;
   transform: scale(1.05);
 }
 
 .tarot-card.selected::before {
-  content: '✓ Écartée';
+  content: '✓';
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) rotate(-12deg);
+  transform: translate(-50%, -50%);
   background: rgba(39, 174, 96, 0.95);
   color: white;
-  font-size: 0.8rem;
+  font-size: 1.5rem;
   font-weight: 900;
-  padding: 6px 12px;
-  border-radius: 4px;
-  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 50%;
   z-index: 20;
-  white-space: nowrap;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
   pointer-events: none;
-  border: 1px solid white;
+  border: 1.5px solid white;
 }
 
 /* Suit Colors */
 .tarot-card[data-suit="spade"],
 .tarot-card[data-suit="club"] {
-  color: #1a252f;
+  color: #000000;
 }
 
 .tarot-card[data-suit="heart"],
 .tarot-card[data-suit="diamond"] {
-  color: #c0392b;
+  color: #d32f2f;
 }
 
 /* ATOUT (TRUMP) DISTINCT VISUAL STYLING */
 .tarot-card[data-suit="trump"] {
-  color: #111111;
-  background: linear-gradient(180deg, #fff9e6 0%, #fef3c7 40%, #fde68a 100%);
-  border: 2.5px solid #d97706;
-  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.35);
-}
-
-.tarot-card[data-suit="trump"] .trump-header-banner {
-  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
-  color: #ffffff;
-  font-size: 0.85rem;
-  font-weight: 900;
-  text-align: center;
-  padding: 1px 0;
-  border-radius: 3px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 1px;
-  text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+  color: #000000;
+  background: #ffffff;
 }
 
 /* EXCUSE DISTINCT VISUAL STYLING */
 .tarot-card[data-suit="excuse"] {
-  color: #ffffff;
-  background: linear-gradient(180deg, #9333ea 0%, #6b21a8 100%);
-  border: 2.5px solid #a855f7;
-  box-shadow: 0 2px 10px rgba(147, 51, 234, 0.4);
-}
-
-.tarot-card[data-suit="excuse"] .excuse-header-banner {
-  background: #facc15;
   color: #000000;
-  font-size: 0.85rem;
-  font-weight: 900;
-  text-align: center;
-  padding: 1px 0;
-  border-radius: 3px;
-  text-transform: uppercase;
-  margin-bottom: 1px;
+  background: #ffffff;
 }
 
 /* Card Corner Ranks & Symbols */
 .card-corner {
+  position: absolute;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  line-height: 1;
+  gap: 0.1vw;
+  font-family: 'Times New Roman', Times, Baskerville, Georgia, serif;
   font-weight: 900;
-  font-size: 1.4rem;
+  line-height: 1;
+  font-size: 1.8vw;
+  height: 2vw;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.1vw 0.3vw;
+  border-radius: 0.3vw;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  z-index: 5;
+  pointer-events: none;
 }
 
 .card-corner.top-left {
-  align-self: flex-start;
+  top: 0.4vw;
+  left: 0.4vw;
 }
 
 .card-corner.bottom-right {
-  align-self: flex-end;
+  bottom: 0.4vw;
+  right: 0.4vw;
   transform: rotate(180deg);
 }
 
 .suit-symbol {
-  font-size: 1.3rem;
-  margin-top: 1px;
+  font-size: 1.6vw;
+}
+
+.rank-num {
+  font-size: 1.8vw;
 }
 
 /* Center Card Art/Content */
 .card-center {
-  flex: 1;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.card-illustration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.5vw;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.card-center-fallback {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  background: #ffffff;
+  border-radius: 0.5vw;
+  pointer-events: none;
 }
 
 .trump-number {
@@ -635,6 +659,25 @@ header {
 
 .suit-pip-center {
   font-size: 2.4rem;
+}
+
+/* Card Pips Grid (for 2 to 10 numbered cards) */
+.card-pips-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  width: 80%;
+  height: 75%;
+  margin: auto;
+  pointer-events: none;
+}
+
+.card-pips-grid .pip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4vh;
+  line-height: 1;
 }
 
   </style>
@@ -1578,10 +1621,25 @@ class TarotAI {
 }
 
 // --- src/engine/stateMachine.js ---
+const CLASSIC_NAMES = [
+  "Nicole", "Jean", "Michel", "Philippe", "Alain", "Christian", "Patrick", 
+  "Bernard", "Gérard", "Jacques", "Monique", "Françoise", "Jacqueline", 
+  "Chantal", "Martine", "Brigitte", "Catherine", "Sylvie", "Patricia", 
+  "Daniel", "Kévin"
+];
+
+function getRandomAINames() {
+  const shuffled = [...CLASSIC_NAMES].sort(() => 0.5 - Math.random());
+  return [shuffled[0], shuffled[1], shuffled[2]];
+}
+
 class GameStateMachine {
   constructor(players = DEFAULT_PLAYERS) {
+    const aiNames = getRandomAINames();
+    let aiIndex = 0;
     this.players = players.map(p => ({
       ...p,
+      name: p.isHuman ? p.name : aiNames[aiIndex++],
       hand: [],
       wonCards: []
     }));
@@ -1836,6 +1894,60 @@ class GameStateMachine {
 }
 
 // --- src/components/cardRenderer.js ---
+const TAROT_IMAGE_URLS = {
+  "trump_1": "https://upload.wikimedia.org/wikipedia/commons/5/52/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_01.jpg",
+  "trump_2": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_02.jpg",
+  "trump_3": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_03.jpg",
+  "trump_4": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_04.jpg",
+  "trump_5": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_05.jpg",
+  "trump_6": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_06.jpg",
+  "trump_7": "https://upload.wikimedia.org/wikipedia/commons/9/91/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_07.jpg",
+  "trump_8": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_08.jpg",
+  "trump_9": "https://upload.wikimedia.org/wikipedia/commons/0/03/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_09.jpg",
+  "trump_10": "https://upload.wikimedia.org/wikipedia/commons/2/23/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_10.jpg",
+  "trump_11": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_11.jpg",
+  "trump_12": "https://upload.wikimedia.org/wikipedia/commons/0/04/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_12.jpg",
+  "trump_13": "https://upload.wikimedia.org/wikipedia/commons/3/31/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_13.jpg",
+  "trump_14": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_14.jpg",
+  "trump_15": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_15.jpg",
+  "trump_16": "https://upload.wikimedia.org/wikipedia/commons/8/87/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_16.jpg",
+  "trump_17": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_17.jpg",
+  "trump_18": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_18.jpg",
+  "trump_19": "https://upload.wikimedia.org/wikipedia/commons/6/66/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_19.jpg",
+  "trump_20": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_20.jpg",
+  "trump_21": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_21.jpg",
+  "excuse": "https://upload.wikimedia.org/wikipedia/commons/3/37/Tarot_nouveau_-_Grimaud_-_1898_-_Trumps_-_Excuse.jpg",
+  "spade_11": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Tarot_nouveau_-_Grimaud_-_1898_-_Spades_-_Jack.jpg",
+  "spade_12": "https://upload.wikimedia.org/wikipedia/commons/9/91/Tarot_nouveau_-_Grimaud_-_1898_-_Spades_-_Knight.jpg",
+  "spade_13": "https://upload.wikimedia.org/wikipedia/commons/8/88/Tarot_nouveau_-_Grimaud_-_1898_-_Spades_-_Queen.jpg",
+  "spade_14": "https://upload.wikimedia.org/wikipedia/commons/2/24/Tarot_nouveau_-_Grimaud_-_1898_-_Spades_-_King.jpg",
+  "heart_11": "https://upload.wikimedia.org/wikipedia/commons/4/41/Tarot_nouveau_-_Grimaud_-_1898_-_Hearts_-_Jack.jpg",
+  "heart_12": "https://upload.wikimedia.org/wikipedia/commons/8/81/Tarot_nouveau_-_Grimaud_-_1898_-_Hearts_-_Knight.jpg",
+  "heart_13": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Tarot_nouveau_-_Grimaud_-_1898_-_Hearts_-_Queen.jpg",
+  "heart_14": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Tarot_nouveau_-_Grimaud_-_1898_-_Hearts_-_King.jpg",
+  "diamond_11": "https://upload.wikimedia.org/wikipedia/commons/c/c7/Tarot_nouveau_-_Grimaud_-_1898_-_Diamonds_-_Jack.jpg",
+  "diamond_12": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Tarot_nouveau_-_Grimaud_-_1898_-_Diamonds_-_Knight.jpg",
+  "diamond_13": "https://upload.wikimedia.org/wikipedia/commons/7/77/Tarot_nouveau_-_Grimaud_-_1898_-_Diamonds_-_Queen.jpg",
+  "diamond_14": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Tarot_nouveau_-_Grimaud_-_1898_-_Diamonds_-_King.jpg",
+  "club_11": "https://upload.wikimedia.org/wikipedia/commons/d/d2/Tarot_nouveau_-_Grimaud_-_1898_-_Clubs_-_Jack.jpg",
+  "club_12": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Tarot_nouveau_-_Grimaud_-_1898_-_Clubs_-_Knight.jpg",
+  "club_13": "https://upload.wikimedia.org/wikipedia/commons/1/11/Tarot_nouveau_-_Grimaud_-_1898_-_Clubs_-_Queen.jpg",
+  "club_14": "https://upload.wikimedia.org/wikipedia/commons/5/52/Tarot_nouveau_-_Grimaud_-_1898_-_Clubs_-_King.jpg"
+};
+
+const PIP_GRID_POSITIONS = {
+  1: [[3, 2]],
+  2: [[1, 2], [5, 2]],
+  3: [[1, 2], [3, 2], [5, 2]],
+  4: [[1, 1], [1, 3], [5, 1], [5, 3]],
+  5: [[1, 1], [1, 3], [3, 2], [5, 1], [5, 3]],
+  6: [[1, 1], [1, 3], [3, 1], [3, 3], [5, 1], [5, 3]],
+  7: [[1, 1], [1, 3], [2, 2], [3, 1], [3, 3], [5, 1], [5, 3]],
+  8: [[1, 1], [1, 3], [2, 2], [3, 1], [3, 3], [4, 2], [5, 1], [5, 3]],
+  9: [[1, 1], [1, 3], [2, 1], [2, 3], [3, 2], [4, 1], [4, 3], [5, 1], [5, 3]],
+  10: [[1, 1], [1, 3], [2, 1], [2, 3], [2, 2], [4, 2], [4, 1], [4, 3], [5, 1], [5, 3]]
+};
+
 /**
  * Creates DOM card element for French Tarot cards.
  */
@@ -1874,63 +1986,73 @@ class CardRenderer {
 
     const symbol = card.symbol || '★';
 
-    // 1. Top Banner for Trump / Excuse
-    if (card.suit === SUITS.TRUMP) {
-      const banner = document.createElement('div');
-      banner.className = 'trump-header-banner';
-      banner.innerText = card.value === 1 ? 'PETIT' : (card.value === 21 ? '21 ATOUT' : `ATOUT ${card.value}`);
-      cardEl.appendChild(banner);
-    } else if (card.suit === SUITS.EXCUSE) {
-      const banner = document.createElement('div');
-      banner.className = 'excuse-header-banner';
-      banner.innerText = 'EXCUSE';
-      cardEl.appendChild(banner);
+    // 1. Illustrated Cards (Atouts, Excuse, Figures)
+    const imageUrl = TAROT_IMAGE_URLS[card.id];
+    let fallbackNeeded = true;
+
+    if (imageUrl) {
+      fallbackNeeded = false;
+      const img = document.createElement('img');
+      img.className = 'card-illustration';
+      img.src = imageUrl;
+      
+      const fallbackCenter = document.createElement('div');
+      fallbackCenter.className = 'card-center-fallback';
+      fallbackCenter.style.display = 'none';
+      this.populateFallbackCenter(fallbackCenter, card, symbol);
+
+      img.onload = () => {
+        fallbackCenter.style.display = 'none';
+      };
+      img.onerror = () => {
+        img.style.display = 'none';
+        fallbackCenter.style.display = 'flex';
+      };
+
+      cardEl.appendChild(img);
+      cardEl.appendChild(fallbackCenter);
     }
 
-    // 2. Top Left Corner
+    // 2. Normal Center (Numbered Cards)
+    if (fallbackNeeded) {
+      const center = document.createElement('div');
+      center.className = 'card-center';
+
+      if (card.suit !== SUITS.TRUMP && card.suit !== SUITS.EXCUSE && card.value <= 10) {
+        // Render 1 to 10 pips grid
+        const pipsGrid = document.createElement('div');
+        pipsGrid.className = 'card-pips-grid';
+        const coords = PIP_GRID_POSITIONS[card.value] || [];
+        
+        coords.forEach(([row, col]) => {
+          const pip = document.createElement('div');
+          pip.className = 'pip';
+          pip.style.gridRow = row;
+          pip.style.gridColumn = col;
+          pip.innerText = symbol;
+          pipsGrid.appendChild(pip);
+        });
+        center.appendChild(pipsGrid);
+      } else {
+        this.populateFallbackCenter(center, card, symbol);
+      }
+      cardEl.appendChild(center);
+    }
+
+    // 3. Corners (Top-Left & Bottom-Right)
+    const rankSymbolHtml = card.suit !== SUITS.TRUMP && card.suit !== SUITS.EXCUSE
+      ? `<span class="rank-num">${rankText}</span><span class="rank-sym">${symbol}</span>`
+      : `<span class="rank-num">${rankText}</span>`;
+
     const topLeft = document.createElement('div');
     topLeft.className = 'card-corner top-left';
-    topLeft.innerHTML = `<div>${rankText}</div>${card.suit !== SUITS.TRUMP && card.suit !== SUITS.EXCUSE ? `<div class="suit-symbol">${symbol}</div>` : ''}`;
+    topLeft.innerHTML = rankSymbolHtml;
 
-    // 3. Center Content
-    const center = document.createElement('div');
-    center.className = 'card-center';
-
-    if (card.suit === SUITS.TRUMP) {
-      center.innerHTML = `
-        <div class="trump-frame">
-          <div class="trump-number">${card.value}</div>
-          ${card.isBout ? '<div class="bout-badge">BOUT</div>' : ''}
-        </div>
-      `;
-    } else if (card.suit === SUITS.EXCUSE) {
-      center.innerHTML = `
-        <div class="trump-frame" style="background: rgba(255,255,255,0.25); border-color: #facc15;">
-          <div class="court-art">🃏</div>
-          <div class="bout-badge">BOUT</div>
-        </div>
-      `;
-    } else {
-      // Court cards vs pip cards
-      if (card.value >= 11) {
-        let icon = '♟️';
-        if (card.value === 14) icon = '👑';
-        else if (card.value === 13) icon = '👸';
-        else if (card.value === 12) icon = '🐴';
-        else if (card.value === 11) icon = '🛡️';
-        center.innerHTML = `<div class="court-art">${icon}</div>`;
-      } else {
-        center.innerHTML = `<div class="suit-pip-center">${symbol}</div>`;
-      }
-    }
-
-    // 4. Bottom Right Corner
     const bottomRight = document.createElement('div');
     bottomRight.className = 'card-corner bottom-right';
-    bottomRight.innerHTML = `<div>${rankText}</div>${card.suit !== SUITS.TRUMP && card.suit !== SUITS.EXCUSE ? `<div class="suit-symbol">${symbol}</div>` : ''}`;
+    bottomRight.innerHTML = rankSymbolHtml;
 
     cardEl.appendChild(topLeft);
-    cardEl.appendChild(center);
     cardEl.appendChild(bottomRight);
 
     if (options.onClick) {
@@ -1941,6 +2063,35 @@ class CardRenderer {
     }
 
     return cardEl;
+  }
+
+  static populateFallbackCenter(container, card, symbol) {
+    if (card.suit === SUITS.TRUMP) {
+      container.innerHTML = `
+        <div class="trump-frame">
+          <div class="trump-number">${card.value}</div>
+          ${card.isBout ? '<div class="bout-badge">BOUT</div>' : ''}
+        </div>
+      `;
+    } else if (card.suit === SUITS.EXCUSE) {
+      container.innerHTML = `
+        <div class="trump-frame" style="background: rgba(255,255,255,0.25); border-color: #facc15;">
+          <div class="court-art">🃏</div>
+          <div class="bout-badge">BOUT</div>
+        </div>
+      `;
+    } else {
+      if (card.value >= 11) {
+        let icon = '♟️';
+        if (card.value === 14) icon = '👑';
+        else if (card.value === 13) icon = '👸';
+        else if (card.value === 12) icon = '🐴';
+        else if (card.value === 11) icon = '🛡️';
+        container.innerHTML = `<div class="court-art">${icon}</div>`;
+      } else {
+        container.innerHTML = `<div class="suit-pip-center">${symbol}</div>`;
+      }
+    }
   }
 }
 
@@ -2079,7 +2230,20 @@ class UIController {
 
   init() {
     this.bindDOM();
+    this.setupPlayerNames();
     this.startNewHand();
+  }
+
+  setupPlayerNames() {
+    this.game.players.forEach(p => {
+      const slot = this.dom.playerSlots[p.id];
+      if (slot) {
+        const nameTag = slot.querySelector('.player-name-tag');
+        if (nameTag) {
+          nameTag.innerText = p.name;
+        }
+      }
+    });
   }
 
   bindDOM() {
@@ -2198,41 +2362,56 @@ class UIController {
     const human = this.game.players[0];
     this.dom.humanHand.innerHTML = '';
 
-    const handWrapper = document.createElement('div');
-    handWrapper.className = 'hand-cards-wrapper';
-
     const count = human.hand.length;
     if (count === 0) return;
-
-    // Compact hand calculation: max width around 600px for 18 cards, keeping distance from edges
-    const containerWidth = Math.min(680, Math.max(320, (window.innerWidth || 800) - 160));
-    const cardOffset = count > 1 ? Math.min(30, Math.max(18, (containerWidth - 92) / (count - 1))) : 0;
-    const startX = -(count - 1) * cardOffset / 2;
 
     const isPlayingTurn = (this.game.phase === GAME_PHASES.PLAYING && this.game.currentTurnPlayerId === 0);
     const legalMoves = isPlayingTurn ? getLegalMoves(human.hand, this.game.currentTrick) : [];
 
-    human.hand.forEach((card, index) => {
-      // During trick play, highlight legal cards; during bidding/discard, all hand cards are enabled
-      const isPlayable = isPlayingTurn ? legalMoves.some(c => c.id === card.id) : false;
-      const isSelected = this.selectedChienCards.some(c => c.id === card.id);
+    // Split hand in half
+    const half = Math.ceil(count / 2);
+    const topCards = human.hand.slice(0, half);
+    const bottomCards = human.hand.slice(half);
 
-      const cardEl = CardRenderer.renderCard(card, {
-        isPlayable,
-        isSelected,
-        onClick: (c) => this.onHumanCardClick(c)
+    const renderRow = (cards, rowClass, isBottomRow) => {
+      const rowWrapper = document.createElement('div');
+      rowWrapper.className = `hand-cards-row ${rowClass}`;
+      
+      const k = cards.length;
+      if (k === 0) return rowWrapper;
+
+      // 8vw width per card. Overlap 20% means card offset is 6.4vw.
+      // Total width of row of k cards = (k - 1) * 6.4vw + 8vw.
+      const rowWidthVw = (k - 1) * 6.4 + 8;
+      rowWrapper.style.width = `${rowWidthVw}vw`;
+
+      cards.forEach((card, index) => {
+        const isPlayable = isPlayingTurn ? legalMoves.some(c => c.id === card.id) : false;
+        const isSelected = this.selectedChienCards.some(c => c.id === card.id);
+
+        const cardEl = CardRenderer.renderCard(card, {
+          isPlayable,
+          isSelected,
+          onClick: (c) => this.onHumanCardClick(c)
+        });
+
+        cardEl.className += ' hand-card-item';
+        cardEl.style.position = 'absolute';
+        cardEl.style.left = `${index * 6.4}vw`;
+        cardEl.style.top = '0';
+        cardEl.style.zIndex = index + 1;
+
+        rowWrapper.appendChild(cardEl);
       });
 
-      cardEl.className += ' hand-card-item';
-      
-      const posX = Math.round(startX + index * cardOffset);
-      cardEl.style.setProperty('--card-x', `${posX}px`);
-      cardEl.style.zIndex = index + 1;
+      return rowWrapper;
+    };
 
-      handWrapper.appendChild(cardEl);
-    });
+    const topRowEl = renderRow(topCards, 'top-row', false);
+    const bottomRowEl = renderRow(bottomCards, 'bottom-row', true);
 
-    this.dom.humanHand.appendChild(handWrapper);
+    this.dom.humanHand.appendChild(topRowEl);
+    this.dom.humanHand.appendChild(bottomRowEl);
   }
 
   renderTrickCards(plays) {
