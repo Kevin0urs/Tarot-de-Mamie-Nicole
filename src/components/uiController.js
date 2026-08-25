@@ -15,16 +15,7 @@ export class UIController {
   init() {
     this.bindDOM();
     this.setupPlayerNames();
-    this.preloadCardImages();
     this.startNewHand();
-  }
-
-  preloadCardImages() {
-    // Eagerly load all 38 illustrated card thumbnails into browser cache
-    Object.values(CardRenderer.IMAGE_URLS).forEach(url => {
-      const img = new Image();
-      img.src = url;
-    });
   }
 
   setupPlayerNames() {
