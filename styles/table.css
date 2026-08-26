@@ -16,9 +16,9 @@
 .tarot-table {
   position: relative;
   width: 75%; /* Narrower to leave room for players on sides */
-  height: 96%;
-  max-height: 380px;
-  min-height: 220px;
+  height: 84%; /* Reduced from 96% to leave space at top and bottom */
+  max-height: 330px;
+  min-height: 200px;
   background: radial-gradient(circle, #258c49 0%, #134e26 100%);
   border: 10px solid #8d5628;
   border-radius: 160px;
@@ -67,19 +67,19 @@
 
 /* Center Game Info (Contract & Trick number) */
 .center-info {
-  margin: 4px auto;
+  margin: 2px 0 0 0;
   background: rgba(0, 0, 0, 0.78);
   color: #fff;
-  padding: 6px 16px;
-  border-radius: 16px;
-  font-size: 0.9rem;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
   font-weight: 700;
   border: 1px solid rgba(255, 255, 255, 0.3);
   display: flex;
-  gap: 14px;
+  gap: 12px;
   align-items: center;
   z-index: 12;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 /* Player Slots — positioned in the players-overlay, outside the green table */
@@ -95,23 +95,23 @@
 
 /* North & South: centered horizontally, just outside the table top/bottom */
 .player-slot.north {
-  top: 0;
+  top: -45px; /* Pushed up to sit in the header/table gap */
   left: 50%;
   transform: translateX(-50%);
 }
 .player-slot.south {
-  bottom: 0;
+  bottom: -35px; /* Pushed down to sit between hand and table */
   left: 50%;
   transform: translateX(-50%);
 }
 /* West & East: centered vertically, at the left/right edges */
 .player-slot.west {
-  left: 0;
+  left: -40px;
   top: 50%;
   transform: translateY(-50%);
 }
 .player-slot.east {
-  right: 0;
+  right: -40px;
   top: 50%;
   transform: translateY(-50%);
 }

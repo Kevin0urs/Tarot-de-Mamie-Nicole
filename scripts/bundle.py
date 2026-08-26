@@ -64,16 +64,17 @@ def bundle():
   <div id="app">
     <!-- Retro Header -->
     <header>
-      <div class="game-title">Le tarot de Mamie Nicole</div>
+      <div class="header-left">
+        <div class="game-title">Le tarot de Mamie Nicole</div>
+        <!-- Center Info (OUTSIDE the table, aligned left under title) -->
+        <div class="center-info" id="center-info">
+          <span>Phase: <strong>Initialisation...</strong></span>
+        </div>
+      </div>
       <div class="header-controls">
         <button class="btn-icon" id="sound-btn" title="Activer/Désactiver le son">🔊</button>
       </div>
     </header>
-
-    <!-- Center Info (OUTSIDE the table) -->
-    <div class="center-info" id="center-info">
-      <span>Phase: <strong>Initialisation...</strong></span>
-    </div>
 
     <!-- Table Container -->
     <div class="table-container">

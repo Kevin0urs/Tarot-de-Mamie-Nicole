@@ -83,13 +83,19 @@ html, body {
 header {
   width: 100%;
   max-width: 1100px;
-  height: 48px;
+  height: 80px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 10px;
   flex-shrink: 0;
   z-index: 10;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .game-title {
@@ -193,9 +199,9 @@ header {
 .tarot-table {
   position: relative;
   width: 75%; /* Narrower to leave room for players on sides */
-  height: 96%;
-  max-height: 380px;
-  min-height: 220px;
+  height: 84%; /* Reduced from 96% to leave space at top and bottom */
+  max-height: 330px;
+  min-height: 200px;
   background: radial-gradient(circle, #258c49 0%, #134e26 100%);
   border: 10px solid #8d5628;
   border-radius: 160px;
@@ -244,19 +250,19 @@ header {
 
 /* Center Game Info (Contract & Trick number) */
 .center-info {
-  margin: 4px auto;
+  margin: 2px 0 0 0;
   background: rgba(0, 0, 0, 0.78);
   color: #fff;
-  padding: 6px 16px;
-  border-radius: 16px;
-  font-size: 0.9rem;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
   font-weight: 700;
   border: 1px solid rgba(255, 255, 255, 0.3);
   display: flex;
-  gap: 14px;
+  gap: 12px;
   align-items: center;
   z-index: 12;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 /* Player Slots — positioned in the players-overlay, outside the green table */
@@ -272,23 +278,23 @@ header {
 
 /* North & South: centered horizontally, just outside the table top/bottom */
 .player-slot.north {
-  top: 0;
+  top: -45px; /* Pushed up to sit in the header/table gap */
   left: 50%;
   transform: translateX(-50%);
 }
 .player-slot.south {
-  bottom: 0;
+  bottom: -35px; /* Pushed down to sit between hand and table */
   left: 50%;
   transform: translateX(-50%);
 }
 /* West & East: centered vertically, at the left/right edges */
 .player-slot.west {
-  left: 0;
+  left: -40px;
   top: 50%;
   transform: translateY(-50%);
 }
 .player-slot.east {
-  right: 0;
+  right: -40px;
   top: 50%;
   transform: translateY(-50%);
 }
@@ -732,16 +738,17 @@ header {
   <div id="app">
     <!-- Retro Header -->
     <header>
-      <div class="game-title">Le tarot de Mamie Nicole</div>
+      <div class="header-left">
+        <div class="game-title">Le tarot de Mamie Nicole</div>
+        <!-- Center Info (OUTSIDE the table, aligned left under title) -->
+        <div class="center-info" id="center-info">
+          <span>Phase: <strong>Initialisation...</strong></span>
+        </div>
+      </div>
       <div class="header-controls">
         <button class="btn-icon" id="sound-btn" title="Activer/Désactiver le son">🔊</button>
       </div>
     </header>
-
-    <!-- Center Info (OUTSIDE the table) -->
-    <div class="center-info" id="center-info">
-      <span>Phase: <strong>Initialisation...</strong></span>
-    </div>
 
     <!-- Table Container -->
     <div class="table-container">
