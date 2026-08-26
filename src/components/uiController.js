@@ -23,9 +23,9 @@ export class UIController {
       const slot = this.dom.playerSlots[p.id];
       if (slot) {
         const nameTag = slot.querySelector('.player-name-tag');
-        if (nameTag) {
-          nameTag.innerText = p.name;
-        }
+        if (nameTag) nameTag.innerText = p.name;
+        const avatarBox = slot.querySelector('.avatar-box');
+        if (avatarBox && p.avatar) avatarBox.innerText = p.avatar;
       }
     });
   }

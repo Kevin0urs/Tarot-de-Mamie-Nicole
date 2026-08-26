@@ -6,24 +6,53 @@ import { calculateRoundScores } from './scoring.js';
 import { TarotAI } from './ai.js';
 
 const CLASSIC_NAMES = [
-  "Nicole", "Jean", "Michel", "Philippe", "Alain", "Christian", "Patrick", 
-  "Bernard", "Gérard", "Jacques", "Monique", "Françoise", "Jacqueline", 
-  "Chantal", "Martine", "Brigitte", "Catherine", "Sylvie", "Patricia", 
-  "Daniel", "Kévin"
+  { name: "Nicole",     gender: "f" },
+  { name: "Jean",       gender: "m" },
+  { name: "Michel",     gender: "m" },
+  { name: "Philippe",   gender: "m" },
+  { name: "Alain",      gender: "m" },
+  { name: "Christian",  gender: "m" },
+  { name: "Patrick",    gender: "m" },
+  { name: "Bernard",    gender: "m" },
+  { name: "Gérard",     gender: "m" },
+  { name: "Jacques",    gender: "m" },
+  { name: "Monique",    gender: "f" },
+  { name: "Françoise",  gender: "f" },
+  { name: "Jacqueline", gender: "f" },
+  { name: "Chantal",    gender: "f" },
+  { name: "Martine",    gender: "f" },
+  { name: "Brigitte",   gender: "f" },
+  { name: "Catherine",  gender: "f" },
+  { name: "Sylvie",     gender: "f" },
+  { name: "Patricia",   gender: "f" },
+  { name: "Daniel",     gender: "m" },
+  { name: "Kévin",      gender: "m" }
 ];
 
-function getRandomAINames() {
+const MALE_AVATARS   = ["👴", "👨", "🧔", "👱‍♂️", "🧑"];
+const FEMALE_AVATARS = ["👵", "👩", "👱‍♀️", "🧕", "👩‍🦳"];
+
+function pickAvatar(gender) {
+  const pool = gender === "f" ? FEMALE_AVATARS : MALE_AVATARS;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function getRandomAIPlayers() {
   const shuffled = [...CLASSIC_NAMES].sort(() => 0.5 - Math.random());
-  return [shuffled[0], shuffled[1], shuffled[2]];
+  return shuffled.slice(0, 3).map(p => ({
+    name: p.name,
+    avatar: pickAvatar(p.gender)
+  }));
 }
 
 export class GameStateMachine {
   constructor(players = DEFAULT_PLAYERS) {
-    const aiNames = getRandomAINames();
+    const aiPlayers = getRandomAIPlayers();
     let aiIndex = 0;
     this.players = players.map(p => ({
       ...p,
-      name: p.isHuman ? p.name : aiNames[aiIndex++],
+      name:   p.isHuman ? p.name   : aiPlayers[aiIndex].name,
+      avatar: p.isHuman ? p.avatar : aiPlayers[aiIndex++].avatar,
       hand: [],
       wonCards: []
     }));

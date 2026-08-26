@@ -175,14 +175,12 @@ header {
 }
 
 /* --- styles/table.css --- */
-/* Table & Player Layout - Le tarot de Mamie Nicole */
-
 /* Middle Table Area: Takes all available vertical space between header & hand */
 .table-container {
   flex: 1;
   width: 100%;
   max-width: 980px;
-  min-height: 0; /* Crucial for flex containers so children shrink rather than overflow! */
+  min-height: 0;
   position: relative;
   display: flex;
   justify-content: center;
@@ -194,7 +192,7 @@ header {
 /* Oval Felt Table: Flexible dimensions that fit any screen aspect ratio */
 .tarot-table {
   position: relative;
-  width: 100%;
+  width: 75%; /* Narrower to leave room for players on sides */
   height: 96%;
   max-height: 380px;
   min-height: 220px;
@@ -208,6 +206,17 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Players Overlay: Covers entire table-container so slots can be placed around the table */
+.players-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
 }
 
 /* Center Trick Area */
@@ -250,7 +259,7 @@ header {
   z-index: 12;
 }
 
-/* Player Slots around the table */
+/* Player Slots — positioned in the players-overlay, outside the green table */
 .player-slot {
   position: absolute;
   display: flex;
@@ -258,12 +267,31 @@ header {
   align-items: center;
   gap: 3px;
   z-index: 15;
+  pointer-events: auto;
 }
 
-.player-slot.north { top: 8px; }
-.player-slot.west  { left: 16px; }
-.player-slot.east  { right: 16px; }
-.player-slot.south { bottom: 8px; }
+/* North & South: centered horizontally, just outside the table top/bottom */
+.player-slot.north {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.player-slot.south {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+/* West & East: centered vertically, at the left/right edges */
+.player-slot.west {
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.player-slot.east {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
 
 /* Player Avatar Box */
 .avatar-box {
@@ -351,7 +379,7 @@ header {
 /* Bottom Dock for Human Hand */
 .human-hand-container {
   width: 100%;
-  height: calc(12vw + 10vh + 1.5vw);
+  height: calc(13.5vw + 10vh + 1.5vw);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -363,7 +391,7 @@ header {
 
 .hand-cards-row {
   position: absolute;
-  height: 12vw;
+  height: 13.5vw;
   left: 50%;
 }
 
@@ -413,7 +441,9 @@ header {
   background: rgba(0, 0, 0, 0.35);
   display: flex;
   justify-content: center;
-  align-items: center;
+  /* Bidding modal sits in the upper third so cards remain visible below */
+  align-items: flex-start;
+  padding-top: 12vh;
   z-index: 500;
   pointer-events: none;
 }
@@ -421,33 +451,45 @@ header {
 .modal-overlay.modal-solid {
   background: rgba(0, 0, 0, 0.78);
   backdrop-filter: blur(3px);
+  align-items: center;
+  padding-top: 0;
 }
 
 .modal-content {
   background: #fdfbf2;
   border: 4px solid #222;
   border-radius: 20px;
-  padding: 18px 24px;
-  max-width: 500px;
-  width: 90%;
+  padding: 14px 20px;
+  max-width: 700px;
+  width: 95%;
   text-align: center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.6);
   pointer-events: auto;
 }
 
 .modal-title {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 900;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   color: #222;
 }
 
+/* Bidding buttons: single row, no wrap, smaller to fit */
 .bidding-options {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-wrap: nowrap;
+  gap: 8px;
   justify-content: center;
-  margin-top: 12px;
+  margin-top: 10px;
+  overflow-x: auto;
+}
+
+.bidding-options .btn-primary,
+.bidding-options .btn-secondary {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 8px 14px;
+  font-size: 0.9rem;
 }
 
 /* --- styles/cards.css --- */
@@ -455,9 +497,9 @@ header {
 
 .tarot-card {
   width: 8vw;
-  height: 12vw;
-  min-width: 70px;
-  min-height: 105px;
+  height: 13.5vw;   /* ~2:3.4 ratio matching Grimaud portrait images */
+  min-width: 65px;
+  min-height: 110px;
   background: #ffffff;
   border: 0.12vw solid #000000;
   border-radius: 0.6vw;
@@ -698,14 +740,8 @@ header {
 
     <!-- Table Container -->
     <div class="table-container">
-      <div class="tarot-table">
-
-        <!-- Center Info & Trick Area -->
-        <div class="center-info" id="center-info">
-          <span>Phase: <strong>Initialisation...</strong></span>
-        </div>
-
-        <div class="trick-area" id="trick-area"></div>
+      <!-- Player Labels Overlay (OUTSIDE the green table) -->
+      <div class="players-overlay">
 
         <!-- Joueur 2 (North) -->
         <div class="player-slot north" id="player-north">
@@ -740,13 +776,22 @@ header {
         </div>
 
       </div>
+
+      <div class="tarot-table">
+        <!-- Center Info & Trick Area -->
+        <div class="center-info" id="center-info">
+          <span>Phase: <strong>Initialisation...</strong></span>
+        </div>
+
+        <div class="trick-area" id="trick-area"></div>
+      </div>
     </div>
 
     <!-- Human Hand Dock -->
     <div class="human-hand-container" id="human-hand"></div>
   </div>
 
-  <!-- Bidding Modal (semi-transparent so hand is still visible below) -->
+  <!-- Bidding Modal (semi-transparent, positioned high so hand stays visible) -->
   <div class="modal-overlay" id="bidding-modal" style="display:none;">
     <div class="modal-content">
       <div class="modal-title" id="bidding-title">À vous d'annoncer !</div>
@@ -1622,24 +1667,53 @@ class TarotAI {
 
 // --- src/engine/stateMachine.js ---
 const CLASSIC_NAMES = [
-  "Nicole", "Jean", "Michel", "Philippe", "Alain", "Christian", "Patrick", 
-  "Bernard", "Gérard", "Jacques", "Monique", "Françoise", "Jacqueline", 
-  "Chantal", "Martine", "Brigitte", "Catherine", "Sylvie", "Patricia", 
-  "Daniel", "Kévin"
+  { name: "Nicole",     gender: "f" },
+  { name: "Jean",       gender: "m" },
+  { name: "Michel",     gender: "m" },
+  { name: "Philippe",   gender: "m" },
+  { name: "Alain",      gender: "m" },
+  { name: "Christian",  gender: "m" },
+  { name: "Patrick",    gender: "m" },
+  { name: "Bernard",    gender: "m" },
+  { name: "Gérard",     gender: "m" },
+  { name: "Jacques",    gender: "m" },
+  { name: "Monique",    gender: "f" },
+  { name: "Françoise",  gender: "f" },
+  { name: "Jacqueline", gender: "f" },
+  { name: "Chantal",    gender: "f" },
+  { name: "Martine",    gender: "f" },
+  { name: "Brigitte",   gender: "f" },
+  { name: "Catherine",  gender: "f" },
+  { name: "Sylvie",     gender: "f" },
+  { name: "Patricia",   gender: "f" },
+  { name: "Daniel",     gender: "m" },
+  { name: "Kévin",      gender: "m" }
 ];
 
-function getRandomAINames() {
+const MALE_AVATARS   = ["👴", "👨", "🧔", "👱‍♂️", "🧑"];
+const FEMALE_AVATARS = ["👵", "👩", "👱‍♀️", "🧕", "👩‍🦳"];
+
+function pickAvatar(gender) {
+  const pool = gender === "f" ? FEMALE_AVATARS : MALE_AVATARS;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function getRandomAIPlayers() {
   const shuffled = [...CLASSIC_NAMES].sort(() => 0.5 - Math.random());
-  return [shuffled[0], shuffled[1], shuffled[2]];
+  return shuffled.slice(0, 3).map(p => ({
+    name: p.name,
+    avatar: pickAvatar(p.gender)
+  }));
 }
 
 class GameStateMachine {
   constructor(players = DEFAULT_PLAYERS) {
-    const aiNames = getRandomAINames();
+    const aiPlayers = getRandomAIPlayers();
     let aiIndex = 0;
     this.players = players.map(p => ({
       ...p,
-      name: p.isHuman ? p.name : aiNames[aiIndex++],
+      name:   p.isHuman ? p.name   : aiPlayers[aiIndex].name,
+      avatar: p.isHuman ? p.avatar : aiPlayers[aiIndex++].avatar,
       hand: [],
       wonCards: []
     }));
@@ -2239,9 +2313,9 @@ class UIController {
       const slot = this.dom.playerSlots[p.id];
       if (slot) {
         const nameTag = slot.querySelector('.player-name-tag');
-        if (nameTag) {
-          nameTag.innerText = p.name;
-        }
+        if (nameTag) nameTag.innerText = p.name;
+        const avatarBox = slot.querySelector('.avatar-box');
+        if (avatarBox && p.avatar) avatarBox.innerText = p.avatar;
       }
     });
   }

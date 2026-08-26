@@ -72,14 +72,8 @@ def bundle():
 
     <!-- Table Container -->
     <div class="table-container">
-      <div class="tarot-table">
-
-        <!-- Center Info & Trick Area -->
-        <div class="center-info" id="center-info">
-          <span>Phase: <strong>Initialisation...</strong></span>
-        </div>
-
-        <div class="trick-area" id="trick-area"></div>
+      <!-- Player Labels Overlay (OUTSIDE the green table) -->
+      <div class="players-overlay">
 
         <!-- Joueur 2 (North) -->
         <div class="player-slot north" id="player-north">
@@ -114,13 +108,22 @@ def bundle():
         </div>
 
       </div>
+
+      <div class="tarot-table">
+        <!-- Center Info & Trick Area -->
+        <div class="center-info" id="center-info">
+          <span>Phase: <strong>Initialisation...</strong></span>
+        </div>
+
+        <div class="trick-area" id="trick-area"></div>
+      </div>
     </div>
 
     <!-- Human Hand Dock -->
     <div class="human-hand-container" id="human-hand"></div>
   </div>
 
-  <!-- Bidding Modal (semi-transparent so hand is still visible below) -->
+  <!-- Bidding Modal (semi-transparent, positioned high so hand stays visible) -->
   <div class="modal-overlay" id="bidding-modal" style="display:none;">
     <div class="modal-content">
       <div class="modal-title" id="bidding-title">À vous d'annoncer !</div>
