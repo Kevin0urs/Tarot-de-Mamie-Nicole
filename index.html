@@ -286,6 +286,9 @@ header {
   bottom: -35px; /* Pushed down to sit between hand and table */
   left: 50%;
   transform: translateX(-50%);
+  flex-direction: row;  /* Horizontal: name | avatar | score */
+  gap: 8px;
+  align-items: center;
 }
 /* West & East: centered vertically, at the left/right edges */
 .player-slot.west {
@@ -782,8 +785,8 @@ header {
         <!-- Vous (South / Human) -->
         <div class="player-slot south" id="player-south">
           <div class="speech-bubble" id="bubble-south"></div>
-          <div class="avatar-box">👵</div>
           <div class="player-name-tag">Vous</div>
+          <div class="avatar-box">👵</div>
           <div class="player-score" id="score-south">0 pts</div>
         </div>
 
@@ -1674,7 +1677,6 @@ class TarotAI {
 
 // --- src/engine/stateMachine.js ---
 const CLASSIC_NAMES = [
-  { name: "Nicole",     gender: "f" },
   { name: "Jean",       gender: "m" },
   { name: "Michel",     gender: "m" },
   { name: "Philippe",   gender: "m" },

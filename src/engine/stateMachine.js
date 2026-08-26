@@ -6,7 +6,6 @@ import { calculateRoundScores } from './scoring.js';
 import { TarotAI } from './ai.js';
 
 const CLASSIC_NAMES = [
-  { name: "Nicole",     gender: "f" },
   { name: "Jean",       gender: "m" },
   { name: "Michel",     gender: "m" },
   { name: "Philippe",   gender: "m" },

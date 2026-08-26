@@ -108,8 +108,8 @@ def bundle():
         <!-- Vous (South / Human) -->
         <div class="player-slot south" id="player-south">
           <div class="speech-bubble" id="bubble-south"></div>
-          <div class="avatar-box">👵</div>
           <div class="player-name-tag">Vous</div>
+          <div class="avatar-box">👵</div>
           <div class="player-score" id="score-south">0 pts</div>
         </div>
 

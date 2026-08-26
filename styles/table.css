@@ -103,6 +103,9 @@
   bottom: -35px; /* Pushed down to sit between hand and table */
   left: 50%;
   transform: translateX(-50%);
+  flex-direction: row;  /* Horizontal: name | avatar | score */
+  gap: 8px;
+  align-items: center;
 }
 /* West & East: centered vertically, at the left/right edges */
 .player-slot.west {
