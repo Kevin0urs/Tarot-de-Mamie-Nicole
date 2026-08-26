@@ -244,19 +244,19 @@ header {
 
 /* Center Game Info (Contract & Trick number) */
 .center-info {
-  position: absolute;
-  top: 10px;
+  margin: 4px auto;
   background: rgba(0, 0, 0, 0.78);
   color: #fff;
-  padding: 4px 14px;
+  padding: 6px 16px;
   border-radius: 16px;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 700;
   border: 1px solid rgba(255, 255, 255, 0.3);
   display: flex;
   gap: 14px;
   align-items: center;
   z-index: 12;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
 /* Player Slots — positioned in the players-overlay, outside the green table */
@@ -738,6 +738,11 @@ header {
       </div>
     </header>
 
+    <!-- Center Info (OUTSIDE the table) -->
+    <div class="center-info" id="center-info">
+      <span>Phase: <strong>Initialisation...</strong></span>
+    </div>
+
     <!-- Table Container -->
     <div class="table-container">
       <!-- Player Labels Overlay (OUTSIDE the green table) -->
@@ -770,7 +775,7 @@ header {
         <!-- Vous (South / Human) -->
         <div class="player-slot south" id="player-south">
           <div class="speech-bubble" id="bubble-south"></div>
-          <div class="avatar-box">👦</div>
+          <div class="avatar-box">👵</div>
           <div class="player-name-tag">Vous</div>
           <div class="player-score" id="score-south">0 pts</div>
         </div>
@@ -778,11 +783,6 @@ header {
       </div>
 
       <div class="tarot-table">
-        <!-- Center Info & Trick Area -->
-        <div class="center-info" id="center-info">
-          <span>Phase: <strong>Initialisation...</strong></span>
-        </div>
-
         <div class="trick-area" id="trick-area"></div>
       </div>
     </div>
@@ -846,7 +846,7 @@ const CONTRACTS = {
 const PLAYER_POSITIONS = ['south', 'west', 'north', 'east'];
 
 const DEFAULT_PLAYERS = [
-  { id: 0, name: 'Vous', isHuman: true, position: 'south', avatar: 'human' },
+  { id: 0, name: 'Vous', isHuman: true, position: 'south', avatar: '👵' },
   { id: 1, name: 'Joueur 1', isHuman: false, position: 'west', avatar: 'papi' },
   { id: 2, name: 'Joueur 2', isHuman: false, position: 'north', avatar: 'mamie' },
   { id: 3, name: 'Joueur 3', isHuman: false, position: 'east', avatar: 'tante' }

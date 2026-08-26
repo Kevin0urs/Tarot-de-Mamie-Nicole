@@ -22,7 +22,7 @@ export const CONTRACTS = {
 export const PLAYER_POSITIONS = ['south', 'west', 'north', 'east'];
 
 export const DEFAULT_PLAYERS = [
-  { id: 0, name: 'Vous', isHuman: true, position: 'south', avatar: 'human' },
+  { id: 0, name: 'Vous', isHuman: true, position: 'south', avatar: '👵' },
   { id: 1, name: 'Joueur 1', isHuman: false, position: 'west', avatar: 'papi' },
   { id: 2, name: 'Joueur 2', isHuman: false, position: 'north', avatar: 'mamie' },
   { id: 3, name: 'Joueur 3', isHuman: false, position: 'east', avatar: 'tante' }
