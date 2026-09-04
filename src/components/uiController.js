@@ -62,8 +62,18 @@ export class UIController {
         1: document.getElementById('score-west'),
         2: document.getElementById('score-north'),
         3: document.getElementById('score-east')
-      }
+      },
+      soundBtn: document.getElementById('sound-btn')
     };
+
+    if (this.dom.soundBtn) {
+      this.dom.soundBtn.addEventListener('click', () => {
+        this.audio.init();
+        const isMuted = this.audio.toggleMute();
+        this.dom.soundBtn.innerText = isMuted ? '🔇' : '🔊';
+        this.dom.soundBtn.title = isMuted ? 'Activer le son' : 'Désactiver le son';
+      });
+    }
 
     if (this.dom.nextRoundBtn) {
       this.dom.nextRoundBtn.addEventListener('click', () => {

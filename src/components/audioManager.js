@@ -14,6 +14,14 @@ export class AudioManager {
         this.ctx = new AudioCtx();
       }
     }
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  }
+
+  toggleMute() {
+    this.muted = !this.muted;
+    return this.muted;
   }
 
   playCardSlide() {
