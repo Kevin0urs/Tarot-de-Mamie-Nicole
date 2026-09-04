@@ -283,12 +283,13 @@ header {
   transform: translateX(-50%);
 }
 .player-slot.south {
-  bottom: -35px; /* Pushed down to sit between hand and table */
+  bottom: 14px; /* Sits inside the table bottom edge — avatar slightly overlaps the felt */
   left: 50%;
   transform: translateX(-50%);
   flex-direction: row;  /* Horizontal: name | avatar | score */
   gap: 8px;
   align-items: center;
+  z-index: 40; /* Above human-hand-container (z-index:25) so never covered by cards */
 }
 /* West & East: centered vertically, at the left/right edges */
 .player-slot.west {
