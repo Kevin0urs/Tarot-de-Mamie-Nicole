@@ -295,10 +295,16 @@ export class GameStateMachine {
       petitAuBoutInfo: this.petitAuBoutInfo
     });
 
+    // Store previous total scores snapshot before applying this round
+    const previousScores = { ...this.totalScores };
+
     // Update total scores
     for (let id = 0; id < 4; id++) {
       this.totalScores[id] += result.playerScores[id];
     }
+
+    result.previousScores = previousScores;
+    result.newTotalScores = { ...this.totalScores };
 
     this.roundResult = result;
     return result;

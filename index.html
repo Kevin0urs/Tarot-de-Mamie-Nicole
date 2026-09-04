@@ -2023,10 +2023,16 @@ class GameStateMachine {
       petitAuBoutInfo: this.petitAuBoutInfo
     });
 
+    // Store previous total scores snapshot before applying this round
+    const previousScores = { ...this.totalScores };
+
     // Update total scores
     for (let id = 0; id < 4; id++) {
       this.totalScores[id] += result.playerScores[id];
     }
+
+    result.previousScores = previousScores;
+    result.newTotalScores = { ...this.totalScores };
 
     this.roundResult = result;
     return result;
@@ -2848,24 +2854,63 @@ class UIController {
     const takerName = this.game.players[res.takerId].name;
 
     this.dom.scoringDetails.innerHTML = `
-      <div style="font-size: 1.2rem; margin-bottom: 12px; color: ${res.isWon ? '#27ae60' : '#c0392b'}; font-weight: 800;">
+      <div style="font-size: 1.25rem; margin-bottom: 12px; color: ${res.isWon ? '#27ae60' : '#c0392b'}; font-weight: 900;">
         ${takerName} a ${res.isWon ? 'GAGNÉ' : 'PERDU'} son contrat ${res.contract.name} !
       </div>
-      <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
-        <tr><td style="padding: 6px; font-weight: bold;">Points faits par le preneur:</td><td>${res.preneurPoints} pts</td></tr>
-        <tr><td style="padding: 6px; font-weight: bold;">Points nécessaires (${res.preneurBouts} Bout${res.preneurBouts > 1 ? 's' : ''}):</td><td>${res.pointTarget} pts</td></tr>
-        <tr><td style="padding: 6px; font-weight: bold;">Écart / Différence:</td><td>${res.diff >= 0 ? '+' : ''}${res.diff} pts</td></tr>
-        ${res.petitAuBoutPoints !== 0 ? `<tr><td style="padding: 6px; font-weight: bold;">Petit au bout:</td><td>${res.petitAuBoutPoints > 0 ? '+10' : '-10'} pts</td></tr>` : ''}
+
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 14px; background: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: inset 0 0 0 1px #e2e8f0; font-size: 0.85rem;">
+        <tr style="border-bottom: 1px solid #edf2f7;"><td style="padding: 6px 12px; font-weight: bold; text-align: left;">Points faits par le preneur:</td><td style="padding: 6px 12px; font-weight: 800; text-align: right;">${res.preneurPoints} / 91 pts</td></tr>
+        <tr style="border-bottom: 1px solid #edf2f7;"><td style="padding: 6px 12px; font-weight: bold; text-align: left;">Points nécessaires (${res.preneurBouts} Bout${res.preneurBouts > 1 ? 's' : ''}):</td><td style="padding: 6px 12px; font-weight: 800; text-align: right;">${res.pointTarget} pts</td></tr>
+        <tr style="border-bottom: 1px solid #edf2f7;"><td style="padding: 6px 12px; font-weight: bold; text-align: left;">Écart / Différence:</td><td style="padding: 6px 12px; font-weight: 800; text-align: right; color: ${res.diff >= 0 ? '#27ae60' : '#c0392b'};">${res.diff >= 0 ? '+' : ''}${res.diff} pts</td></tr>
+        ${res.petitAuBoutPoints !== 0 ? `<tr><td style="padding: 6px 12px; font-weight: bold; text-align: left;">Petit au bout:</td><td style="padding: 6px 12px; font-weight: 800; text-align: right; color: ${res.petitAuBoutPoints > 0 ? '#27ae60' : '#c0392b'};">${res.petitAuBoutPoints > 0 ? '+10' : '-10'} pts</td></tr>` : ''}
       </table>
-      <div style="font-weight: 900; font-size: 1.1rem; margin-bottom: 10px;">Scores de la manche :</div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-weight: bold;">
-        ${this.game.players.map(p => `
-          <div style="background: #eee; padding: 6px 10px; border-radius: 8px; display: flex; justify-content: space-between;">
-            <span>${p.name}:</span>
-            <span style="color: ${res.playerScores[p.id] >= 0 ? '#27ae60' : '#c0392b'}">${res.playerScores[p.id] >= 0 ? '+' : ''}${res.playerScores[p.id]}</span>
-          </div>
-        `).join('')}
-      </div>
+
+      <div style="font-weight: 900; font-size: 1.05rem; margin-bottom: 8px; color: #2d3748; text-align: left;">Bilan des scores :</div>
+
+      <table style="width: 100%; border-collapse: separate; border-spacing: 0 5px; font-size: 0.88rem;">
+        <thead>
+          <tr style="color: #4a5568; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
+            <th style="padding: 3px 8px; text-align: left;">Joueur</th>
+            <th style="padding: 3px 8px; text-align: center;">Précédent</th>
+            <th style="padding: 3px 8px; text-align: center;">Manche</th>
+            <th style="padding: 3px 8px; text-align: right;">Cumulé Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${this.game.players.map(p => {
+            const prev = (res.previousScores && res.previousScores[p.id] !== undefined) ? res.previousScores[p.id] : 0;
+            const round = res.playerScores[p.id] || 0;
+            const total = (res.newTotalScores && res.newTotalScores[p.id] !== undefined) ? res.newTotalScores[p.id] : (prev + round);
+            const isPreneur = (p.id === res.takerId);
+            
+            const prevStr = (prev > 0 ? '+' : '') + prev;
+            const roundStr = (round > 0 ? '+' : '') + round;
+            const totalStr = (total > 0 ? '+' : '') + total;
+
+            const roundColor = round > 0 ? '#27ae60' : (round < 0 ? '#c0392b' : '#718096');
+            const totalBg = total > 0 ? '#27ae60' : (total < 0 ? '#e74c3c' : '#718096');
+
+            return `
+              <tr style="background: ${isPreneur ? '#fffaf0' : '#ffffff'}; border: 1px solid ${isPreneur ? '#f6ad55' : '#cbd5e0'}; border-radius: 6px;">
+                <td style="padding: 6px 10px; text-align: left; font-weight: bold; border-radius: 6px 0 0 6px;">
+                  ${p.name} ${isPreneur ? '<span style="font-size: 0.65rem; background: #e74c3c; color: #fff; padding: 1px 5px; border-radius: 4px; margin-left: 4px; vertical-align: middle;">PRENEUR</span>' : ''}
+                </td>
+                <td style="padding: 6px 10px; text-align: center; color: #718096; font-weight: 600;">
+                  ${prevStr} pts
+                </td>
+                <td style="padding: 6px 10px; text-align: center; color: ${roundColor}; font-weight: 800;">
+                  ${roundStr} pts
+                </td>
+                <td style="padding: 6px 10px; text-align: right; border-radius: 0 6px 6px 0;">
+                  <span style="background: ${totalBg}; color: white; padding: 3px 8px; border-radius: 12px; font-weight: 800; font-size: 0.82rem; display: inline-block;">
+                    ${totalStr} pts
+                  </span>
+                </td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
     `;
   }
 }
